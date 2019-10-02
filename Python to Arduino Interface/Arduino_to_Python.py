@@ -7,23 +7,22 @@
 # andressing them each sequentially.
 # 
 
-
-import serial                                   # Serial Setup for Python, Must install library on computer ```pip install pySerial```
-import time                                     # Allow for pauses (not neccesary in this code, short puases included in API code)
-import ArduinoSetup as Arduino                  # API Library for WatLock Arduino Commands
+import ArduinoSetup as Arduino                                          # API Library for WatLock Arduino Commands
 
 
 # LIST OF ARDUINOS
 #Arduino.Arduino_List.append(["SERIAL_PORT_NAME"    , "SERIAL_#_OF_ARDUINO"     , ""])
- Arduino.Arduino_List.append(["Testduino"           , "85735313033351409161"    , ""]) 
+Arduino.Arduino_List.append (["Testduino"           , "85735313033351409161"    , ""]) 
  
 
 #NECCESARY SETUP FOR SERIAL OBJECTS
-Arduino.match_Arduinos()                                            # Locate Arduinos based on Serial Number
+Arduino.Match_Arduinos()                                                # Locate Arduinos based on Serial Number
 for a in Arduino.Arduino_List:
-    exec (a[0] + " = Arduino.create_serial('" + a[2] + "', 9600)")  # Create Serial Objects for each Arduino in the list
+    if Arduino.Arduino_List[a][2] != "":                                # if Match_Arduino found the arduino
+        exec (a[0] + " = Arduino.Create_Serial('" + a[2] + "', 9600)")  # Create Serial Objects for each Arduino in the list
 for a in Arduino.Arduino_List:
-    exec ("Arduino.start_serial(" + a[0] + ")")                     # Start Each Serial Interface
+    if Arduino.Arduino_List[a][2] != "":                                # if Match_Arduino found the arduino
+        exec ("Arduino.Start_Serial(" + a[0] + ")")                     # Start Each Serial Interface
 
 
 #---------------------------------------------------------------------------------------------------------------------------------
@@ -38,8 +37,8 @@ while (True): #Run Forever
 
     # Data request Command
     
-    data_from_arduino = Testduino.get_data()
-    print (data_from_arduino)
+    data_from_arduino = Testduino.get_data()                            # VSCode and other IDE's may dislike the use of an object that has not been created,
+    print (data_from_arduino)                                           # This is due to the dynamic creation of the Serial Objects in the code above. Ignore these errors.
     
     # Command to send String Command
     
@@ -53,6 +52,6 @@ while (True): #Run Forever
     print (reply_from_other)
 
 
-    #time.sleep(1)                             # Pause so the terminal doesnt fill instantly (only needed for testing)
+    #time.sleep(1)                                                      # Pause so the terminal doesnt fill instantly (only needed for testing)
 #---------------------------------------------------------------------------------------------------------------------------------   
     

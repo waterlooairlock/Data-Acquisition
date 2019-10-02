@@ -12,7 +12,7 @@ import serial.tools.list_ports
 Arduino_List = [] # [English Name, Serial #, Port]
 
 ###################################################################
-def match_Arduinos ():
+def Match_Arduinos ():
     ports = list(serial.tools.list_ports.comports())                # Creates list of Available Serial Ports on the System
     print("\n------List of Serial Ports Found------")               # Formatting Text
     for p in ports:                                                 # For every available port
@@ -40,7 +40,7 @@ def list_available_ports():                                         # A setup to
     for p in ports:
         print (str(p) + " | " + p.hwid + " | " + p.device)       
 ###################################################################  
-def start_serial(port):                                             # Start-Up a serial interface
+def Start_Serial(port):                                             # Start-Up a serial interface
     
     port.dtr = False                                                # Force Disable the Port
     time.sleep(0.022)                                               # Pause (VERY IMPORTANT)
@@ -53,36 +53,36 @@ def start_serial(port):                                             # Start-Up a
         if (str(serial).find("Serial Connection is Ready")):        # Until the Arduino says it is ready to Communicate
             break                                                   # At which point, Stop reading the Serial Port
 ###################################################################
-class create_serial(serial.Serial):                     # Create Serial Object with custom Methods (Custom)
-    
-    def get_data(self):
-        self.write(b'0')                                # Write a '0' bit to the Arduino to say "Okay, send me data"
-        time.sleep(0.022)
-        if(self.inWaiting()>0):                         # Wait for Arduino to post to Serial Port
-            data = str(self.readline())                 # Read reply as String
-            return(data)                                # Return the data
-    
-    def send_command(self, command):
-        self.write(b'1')                                # Write a '1' bit to tell the Arduino "I want to send a Command"
-        time.sleep(0.022)
-        if(self.inWaiting()>0):                         # Wait for Arduino to post to serial
-            verification = self.readline()              # Read the Serial line 
-            #print (verification)                       
-            if (str(verification).find("OK")):          # Check that "OK" verification is in the String reply from Arduino.
-                for i in range(0,len(str(command))):    # For the length of the Command String
-                    self.write(str(command)[i].encode())# Write the i'th character of the String to the Serial port
-                self.write(b'~')                        # Once the entire string has been written, Write a '~' to the Serial Port as an end-command character (can use any Character, Just change in Arduino code)
-                time.sleep(0.022)
-                if(self.inWaiting()>0):                 # Wait for Arduino to send a reply in the Serial port
-                    reply = str(self.readline())        # Read reply as String
-                    return(reply)                       # Return the Reply
+class Create_Serial(serial.Serial):                                 # Create Serial Object with custom Methods (Custom)
                 
-    def other_command(self):
-        self.write(b"2")                                # Third command
-        time.sleep(0.022)
-        if(self.inWaiting()>0):                         # Wait for Arduino to post to Serial Port
-            reply = str(self.readline())                # Read reply as String
-            return(reply)                               # Retunr the reply from Arduino
+    def get_data(self):         
+        self.write(b'0')                                            # Write a '0' bit to the Arduino to say "Okay, send me data"
+        time.sleep(0.022)           
+        if(self.inWaiting()>0):                                     # Wait for Arduino to post to Serial Port
+            data = str(self.readline())                             # Read reply as String
+            return(data)                                            # Return the data
+                
+    def send_command(self, command):            
+        self.write(b'1')                                            # Write a '1' bit to tell the Arduino "I want to send a Command"
+        time.sleep(0.022)           
+        if(self.inWaiting()>0):                                     # Wait for Arduino to post to serial
+            verification = self.readline()                          # Read the Serial line 
+            #print (verification)                                   
+            if (str(verification).find("OK")):                      # Check that "OK" verification is in the String reply from Arduino.
+                for i in range(0,len(str(command))):                # For the length of the Command String
+                    self.write(str(command)[i].encode())            # Write the i'th character of the String to the Serial port
+                self.write(b'~')                                    # Once the entire string has been written, Write a '~' to the Serial Port as an end-command character (can use any Character, Just change in Arduino code)
+                time.sleep(0.022)           
+                if(self.inWaiting()>0):                             # Wait for Arduino to send a reply in the Serial port
+                    reply = str(self.readline())                    # Read reply as String
+                    return(reply)                                   # Return the Reply
+                            
+    def other_command(self):            
+        self.write(b"2")                                            # Third command
+        time.sleep(0.022)           
+        if(self.inWaiting()>0):                                     # Wait for Arduino to post to Serial Port
+            reply = str(self.readline())                            # Read reply as String
+            return(reply)                                           # Retunr the reply from Arduino
             
 
 #if __name__ == '__main__':
