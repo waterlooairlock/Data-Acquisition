@@ -1,5 +1,4 @@
 /*
-
 This program is a basic outline of interaction between
 a Python Script and an Arduino.
 
@@ -7,6 +6,7 @@ The get_data function will deal with getting data from the sensor/s attached to 
 
 The parse_command function will deal with calling functions created 
 */
+
 
 //---------------------------------------------------------------------------------------------------------------------------------
 //Global Variables

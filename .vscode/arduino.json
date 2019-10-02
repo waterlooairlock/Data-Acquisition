@@ -1,0 +1,4 @@
+{
+    "board": "arduino:avr:uno",
+    "sketch": "Python to Arduino Interface\\Arduino_to_Python_Strings_ino\\Arduino_to_Python_Strings_ino.ino"
+}
