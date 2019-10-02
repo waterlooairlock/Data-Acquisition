@@ -19,7 +19,7 @@ Arduino.Arduino_List.append (["Testduino"           , "85735313033351409161"    
 #NECCESARY SETUP FOR SERIAL OBJECTS
 Arduino.Match_Arduinos()                                                # Locate Arduinos based on Serial Number
 i = 0
-for a in range(Arduino.Arduino_List.length):
+for a in Arduino.Arduino_List:
     if Arduino.Arduino_List[i][2] != "":                                # if Match_Arduino found the arduino
         exec (a[0] + " = Arduino.Create_Serial('" + a[2] + "', 9600)")  # Create Serial Objects for each Arduino in the list
     i += 1
