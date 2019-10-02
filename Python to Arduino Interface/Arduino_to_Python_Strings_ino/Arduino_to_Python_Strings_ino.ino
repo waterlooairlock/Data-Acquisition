@@ -1,7 +1,5 @@
 /*
 
-AUTHOR: A. W. Milne
-
 This program is a basic outline of interaction between
 a Python Script and an Arduino.
 

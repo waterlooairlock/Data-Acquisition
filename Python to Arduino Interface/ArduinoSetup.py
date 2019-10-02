@@ -1,3 +1,9 @@
+# 
+# This library is created as an API between the Python
+# script and the Arduinos for the WatLock Design project
+#
+
+
 import time
 import serial
 import serial.tools.list_ports

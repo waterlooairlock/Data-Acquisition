@@ -1,6 +1,4 @@
 # 
-# AUTHOR: A. W. Milne
-# 
 # This program is a basic outline of interaction between
 # a Python Script and an Arduino.
 # 
@@ -8,21 +6,21 @@
 # setting up seperate serial ports for each Arduino and 
 # andressing them each sequentially.
 # 
-# 
 
 
 import serial                                   #Serial Setup for Python, Must install library on computer ```pip install pySerial```
 import time                                     #Allow for pauses (not neccesary, just makes it so the serial isnt brutally fast)
 import ArduinoSetup as Arduino
 
-Arduino.Arduino_List.append(["Testduino", "85735313033351409161",""])
-Arduino.match_Arduinos()
+# Append list of Arduions
+Arduino.Arduino_List.append(["Testduino", "85735313033351409161",""]) 
 
+#NECCESARY SETUP FOR SERIAL OBJECTS
+Arduino.match_Arduinos()                                        # Locate Arduinos based on Serial Number
 for a in Arduino.Arduino_List:
-    exec (a[0] + " = Arduino.Arduinode('" + a[2] + "', 9600)")
-
+    exec (a[0] + " = Arduino.Arduinode('" + a[2] + "', 9600)")  # Create Serial Objects for each Arduino in the list
 for a in Arduino.Arduino_List:
-    exec ("Arduino.start_serial(" + a[0] + ")")
+    exec ("Arduino.start_serial(" + a[0] + ")")                 # Start Each Serial Interface
 
 
 #---------------------------------------------------------------------------------------------------------------------------------
