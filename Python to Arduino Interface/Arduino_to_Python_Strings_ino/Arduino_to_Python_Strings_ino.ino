@@ -3,60 +3,76 @@
 This program is a basic outline of interaction between
 a Python Script and an Arduino.
 
-The Basics of this Protocol can be expanded upon by
-setting up seperate serial ports for each Arduino and 
-andressing them each sequentially.
+The get_data function will deal with getting data from the sensor/s attached to the arduino
 
+The parse_command function will deal with calling functions created 
 */
 
 //---------------------------------------------------------------------------------------------------------------------------------
 //Global Variables
-const int data_array_size = 50;
-char data_array[data_array_size];
+const int data_array_size = 50;                     //Maximum size for Data String to be return to Python (can be increased as needed)
+char data_array[data_array_size];                   //Character Array for Data return (using a Character array is more stable than a String, and Character Arrays cannot be easily passed through function calls)
 
-const int command_return_size = 30;
-char command_return_array[command_return_size];
+const int command_return_size = 30;                 //Maximum size for Reply String From Command parsing
+char command_return_array[command_return_size];     //Character Array for Command Parsing Reply
 
-const int other_return_size = 30;
-char other_return_array[other_return_size];
+const int other_return_size = 30;                   //Maximum size for Reply String From other function (to add new function calls, modify the ArduinoSetup and this code)
+char other_return_array[other_return_size];         //Character Array for the Other Function Reply
 
 //---------------------------------------------------------------------------------------------------------------------------------
 //Setup Serial port and tell python that Arduino is ready
 
 void setup() {
-  Serial.begin(9600);                     // initialize serial communications at 9600 bps:
-  while (!Serial){}                       // Wait for Serial Connection to Finish (needed for USB interface)
-  Serial.println("System Ready");         //Send "System Ready" message to Serial Port to inform Python that it is ready to receive Commands
+  Serial.begin(9600);                     //Initialize serial port at 9600 bps (This speed can be increased by using standard values, but also update the value in the Serial Object Creation calls of the main code)
+  while (!Serial){}                       //Wait for Serial Connection to establish (needed for stable USB interface)
+  Serial.println("Serial Connection is Ready");         //Send "System Ready" message to Serial Port to inform Python that it is ready to receive Commands
 }
 //---------------------------------------------------------------------------------------------------------------------------------
 //#################################################################################################################################
-// ARDUINO SPECIFIC CODE
+
+//SPACE FOR SPECIALIZED FUNCTIONS
+
+
+
+//#################################################################################################################################
+
+//MAIN PARSING FUNCTIONS
+
+
+//Get Data Command
 
 void get_data(){
-  String data_string = "Example data : 12 Mpa : 10:12:12.345";
-  data_string.toCharArray(data_array, data_array_size);
+  String data_string = "Example data : 12 Mpa : 10:12:12.345";                //This is a temporary String variable to store the text string of the data input
+  data_string.toCharArray(data_array, data_array_size);                       //Convert Text Reply String into Character Array and store Globally for compatability and stability (THIS LINE IS VERY IMPORTANT)
 }
 
+
+//Parse Text Command
+
 void parse_command(command){
-    if (command  == "Test Command"){
-      String command_return = "Test Command received";
+    if (command  == "Test Command"){                                          //This is an example text parsing system, but anything can be used to parse the 'Command' input
+      String command_return = "Test Command received";                        //Store the text Reply in the command_return variable
     }
     else{
       String command_return = "Test Command NOT received";
     }
 
-    command_return.toCharArray(command_return_array, command_return_size);
+    command_return.toCharArray(command_return_array, command_return_size);    //Convert Text Reply String into Character Array and store Globally
 }
 
+
+//Example basic Command Outline
+
 void other_command(){
-  String return_string = "This is the return from the other command";
+  String return_string = "This is the return from the other command";         //Same layout as get_data()
   data_string.toCharArray(other_return_array, other_return_size);
 }
 
 
+
+
 //#################################################################################################################################
-//---------------------------------------------------------------------------------------------------------------------------------
-//Main command parsing loop
+//MAIN LOOP (Should not be edited unless adding new low-level command support)
 
 void loop() {  
   
@@ -79,26 +95,26 @@ void loop() {
        // Command from python to get ready to receive a String Command
 
        if (inByte == '1'){
-          char CommandSent[40];                      //Reads up to 40 Character String commands, change to adjust limit (larger requires more ram)
-          int i = 0;                                 //Set string iterator  
-          Serial.println("OK");         //Reply "OK" to Python to confirm command
+          char CommandSent[40];                       //Reads up to 40 Character String commands, change to adjust limit (larger requires more ram)
+          int i = 0;                                  //Set string iterator  
+          Serial.println("OK");                       //Reply "OK" to Python to confirm command
 
-          while(true){                               //Run Infinitely
-            if(Serial.available()>0){                //If there is a value in the Serial Port
-              char input = Serial.read();            //Read Character from the Serial Port
-              if (input != '1' || i != 0){           //If it is either not '1' or the first value (The Serial port on the Arduino wants to read a 1 before the text string, cant figure out why, but this ignores any 1 as the first character)
-                CommandSent[i] = input;              //Place the Character into the Character array
-                if (CommandSent[i] == '~'){          //If the Character pulled from the Serial Port is a '~',
-                  CommandSent[i] = 0;                //replace it with the null character value of 0 (When the Arduino creates the string from the array of characters, it stops at the null character)
-                  break;                             //Since Python finished sending the command, break the While loop
+          while(true){                                //Run Infinitely
+            if(Serial.available()>0){                 //If there is a value in the Serial Port
+              char input = Serial.read();             //Read Character from the Serial Port
+              if (input != '1' || i != 0){            //If it is either not '1' or the first value (The Serial port on the Arduino wants to read a 1 before the text string, cant figure out why, but this ignores any 1 as the first character)
+                CommandSent[i] = input;               //Place the Character into the Character array
+                if (CommandSent[i] == '~'){           //If the Character pulled from the Serial Port is a '~',
+                  CommandSent[i] = 0;                 //replace it with the null character value of 0 (When the Arduino creates the string from the array of characters, it stops at the null character)
+                  break;                              //Since Python finished sending the command, break the While loop
                 }
-                i = i + 1;                           //Interate Character count
+                i = i + 1;                            //Interate Character count
               }
             }
           }
-          String command((char*)CommandSent);        //Convert the Command Array into a Command String
-          parse_command(command);
-          Serial.println(command_return_array);                   //Send reply string back to Python (in this case, I used the command from python to show that it received the command correctly)
+          String command((char*)CommandSent);         //Convert the Command Array into a Command String
+          parse_command(command);                     //Call the parse_command() function
+          Serial.println(command_return_array);       //Send reply string back to Python
        }
        //------------------------------------------
 

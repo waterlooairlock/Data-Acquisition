@@ -8,19 +8,22 @@
 # 
 
 
-import serial                                   #Serial Setup for Python, Must install library on computer ```pip install pySerial```
-import time                                     #Allow for pauses (not neccesary, just makes it so the serial isnt brutally fast)
-import ArduinoSetup as Arduino
+import serial                                   # Serial Setup for Python, Must install library on computer ```pip install pySerial```
+import time                                     # Allow for pauses (not neccesary in this code, short puases included in API code)
+import ArduinoSetup as Arduino                  # API Library for WatLock Arduino Commands
 
-# Append list of Arduions
-Arduino.Arduino_List.append(["Testduino", "85735313033351409161",""]) 
+
+# LIST OF ARDUINOS
+#Arduino.Arduino_List.append(["SERIAL_PORT_NAME"    , "SERIAL_#_OF_ARDUINO"     , ""])
+ Arduino.Arduino_List.append(["Testduino"           , "85735313033351409161"    , ""]) 
+ 
 
 #NECCESARY SETUP FOR SERIAL OBJECTS
-Arduino.match_Arduinos()                                        # Locate Arduinos based on Serial Number
+Arduino.match_Arduinos()                                            # Locate Arduinos based on Serial Number
 for a in Arduino.Arduino_List:
-    exec (a[0] + " = Arduino.Arduinode('" + a[2] + "', 9600)")  # Create Serial Objects for each Arduino in the list
+    exec (a[0] + " = Arduino.create_serial('" + a[2] + "', 9600)")  # Create Serial Objects for each Arduino in the list
 for a in Arduino.Arduino_List:
-    exec ("Arduino.start_serial(" + a[0] + ")")                 # Start Each Serial Interface
+    exec ("Arduino.start_serial(" + a[0] + ")")                     # Start Each Serial Interface
 
 
 #---------------------------------------------------------------------------------------------------------------------------------
@@ -28,7 +31,7 @@ for a in Arduino.Arduino_List:
 
 # This loop just repeatedly sends 3 different commands,
 # the First being a data request, where the arduino just sends back data
-# the Second being a command, where the arduino must receive a string and then reply
+# the Second being a command, where the arduino must receive a string command and then reply
 # the Third being another command, could serve any purpose (possibly return the arduino information)
 
 while (True): #Run Forever
