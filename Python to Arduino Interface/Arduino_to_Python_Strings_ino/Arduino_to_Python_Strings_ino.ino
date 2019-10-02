@@ -51,12 +51,13 @@ void get_data(){
 
 //Parse Text Command
 
-void parse_command(command){
+void parse_command(String command){
+    String command_return = "";
     if (command  == "Test Command"){                                            //This is an example text parsing system, but anything can be used to parse the 'Command' input
-      String command_return = "Test Command received";                          //Store the text Reply in the command_return variable
+      command_return = "Test Command received";                          //Store the text Reply in the command_return variable
     }
     else{
-      String command_return = "Test Command NOT received";
+      command_return = "Test Command NOT received";
     }
 
     command_return.toCharArray(command_return_array, command_return_size+1);    //Convert Text Reply String into Character Array and store Globally
@@ -66,7 +67,7 @@ void parse_command(command){
 //Example basic Command Outline
 
 void other_command(){
-  String return_string = "This is the return from the other command";            //Same layout as get_data()
+  String data_string = "This is the return from the other command";            //Same layout as get_data()
   data_string.toCharArray(other_return_array, other_return_size+1);
 }
 
