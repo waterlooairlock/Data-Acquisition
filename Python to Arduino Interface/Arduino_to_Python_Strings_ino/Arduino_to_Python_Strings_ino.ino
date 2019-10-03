@@ -1,5 +1,5 @@
 /*
-This program is a basic outline of interaction between
+ This program is a basic outline of interaction between
 a Python Script and an Arduino.
 
 The get_data function will deal with getting data from the sensor/s attached to the arduino
@@ -28,12 +28,17 @@ void setup() {
   Serial.begin(9600);                                   //Initialize serial port at 9600 bps (This speed can be increased by using standard values, but also update the value in the Serial Object Creation calls of the main code)
   while (!Serial){}                                     //Wait for Serial Connection to establish (needed for stable USB interface)
   Serial.println("Serial Connection is Ready");         //Send "System Ready" message to Serial Port to inform Python that it is ready to receive Commands
+  specific_setup():
 }
 //---------------------------------------------------------------------------------------------------------------------------------
 //#################################################################################################################################
 
-//SPACE FOR SPECIALIZED FUNCTIONS
+//SPACE FOR ARDUINO SPECIFIC FUNCTIONS
 
+void specific_setup(){
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW);
+}
 
 
 //#################################################################################################################################
@@ -54,10 +59,18 @@ void get_data(){
 void parse_command(String command){
     String command_return = "";
     if (command  == "Test Command"){                                            //This is an example text parsing system, but anything can be used to parse the 'Command' input
-      command_return = "Test Command received";                          //Store the text Reply in the command_return variable
+      command_return = "Test Command received";                                 //Store the text Reply in the command_return variable
     }
-    else{
-      command_return = "Test Command NOT received";
+    else if (command == "LED On"){
+      digitalWrite(LED_BUILTIN, HIGH);
+      command_return = "Test Command received";
+    }
+    else if (command == "LED Off"){
+      digitalWrite(LED_BUILTIN, LOW);
+      command_return = "Built-In LED is set to off";
+    }
+    else {
+      command_return = "Command not recognized";
     }
 
     command_return.toCharArray(command_return_array, command_return_size+1);    //Convert Text Reply String into Character Array and store Globally
