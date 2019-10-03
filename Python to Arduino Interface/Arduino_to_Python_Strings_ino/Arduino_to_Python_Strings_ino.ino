@@ -28,7 +28,7 @@ void setup() {
   Serial.begin(9600);                                   //Initialize serial port at 9600 bps (This speed can be increased by using standard values, but also update the value in the Serial Object Creation calls of the main code)
   while (!Serial){}                                     //Wait for Serial Connection to establish (needed for stable USB interface)
   Serial.println("Serial Connection is Ready");         //Send "System Ready" message to Serial Port to inform Python that it is ready to receive Commands
-  specific_setup():
+  specific_setup();
 }
 //---------------------------------------------------------------------------------------------------------------------------------
 //#################################################################################################################################
