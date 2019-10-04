@@ -32,7 +32,7 @@ def Match_Arduinos ():
         if a[2] == "":
             print(a[0] + " was not found")
             
-    print("------------------------------")                         # Terminal output formatting
+    print("-----------------------------")                          # Terminal output formatting
 ###################################################################         
 def list_available_ports():                                         # A setup tool used to show the Name, Location, and Information of the available Serial Ports (usefull for getting the Serial Number of an Arduino)
     ports = list(serial.tools.list_ports.comports())
