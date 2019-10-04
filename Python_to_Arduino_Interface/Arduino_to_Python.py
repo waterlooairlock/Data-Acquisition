@@ -7,8 +7,8 @@
 # andressing them each sequentially.
 # 
 
+import time                                                             # Needed for pauses in testing
 import ArduinoSetup as Arduino                                          # API Library for WatLock Arduino Commands
-
 
 
 # LIST OF ARDUINOS
@@ -57,6 +57,6 @@ while (True): #Run Forever
     print (reply_from_other)
 
 
-    #time.sleep(1)                                                      # Pause so the terminal doesnt fill instantly (only needed for testing)
+    time.sleep(1)                                                      # Pause so the terminal doesnt fill instantly (only needed for testing)
 #---------------------------------------------------------------------------------------------------------------------------------   
     
