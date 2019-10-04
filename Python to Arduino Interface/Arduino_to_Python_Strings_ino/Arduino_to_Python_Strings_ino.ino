@@ -63,11 +63,11 @@ void parse_command(String command){
     }
     else if (command == "LED On"){
       digitalWrite(LED_BUILTIN, HIGH);
-      command_return = "Test Command received";
+      command_return = "Built-In LED is set to On";
     }
     else if (command == "LED Off"){
       digitalWrite(LED_BUILTIN, LOW);
-      command_return = "Built-In LED is set to off";
+      command_return = "Built-In LED is set to Off";
     }
     else {
       command_return = "Command not recognized";

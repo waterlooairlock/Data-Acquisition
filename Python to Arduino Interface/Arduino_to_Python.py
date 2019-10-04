@@ -8,7 +8,7 @@
 # 
 
 import ArduinoSetup as Arduino                                          # API Library for WatLock Arduino Commands
-import serial
+
 
 
 # LIST OF ARDUINOS
