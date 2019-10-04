@@ -11,7 +11,6 @@ import time                                                             # Needed
 import ArduinoSetup as Arduino                                          # API Library for WatLock Arduino Commands
 
 
-
 # LIST OF ARDUINOS
 #Arduino.Arduino_List.append(["SERIAL_PORT_NAME"    , "SERIAL_#_OF_ARDUINO"     , ""])
 Arduino.Arduino_List.append (["Testduino"           , "85735313033351409161"    , ""]) 
