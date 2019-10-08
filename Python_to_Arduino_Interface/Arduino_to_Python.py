@@ -4,7 +4,7 @@
 # 
 # The Basics of this Protocol can be expanded upon by
 # setting up seperate serial ports for each Arduino and 
-# andressing them each sequentially.
+# addressing them each sequentially.
 # 
 
 import time                                                             # Needed for pauses in testing
