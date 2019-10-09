@@ -1,5 +1,7 @@
 ## CUSTOM GIT IGNORE PARAMETERS
 *.code-workspace
+desktop.ini
+
 
 ## VISUAL STUDIO GIT IGNORE PARAMETERS
 ## Ignore Visual Studio temporary files, build results, and
@@ -355,4 +357,5 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
 
