@@ -21,6 +21,18 @@ char command_return_array[command_return_size + 1];     //Character Array for Co
 const int other_return_size = 30;                       //Maximum size for Reply String From other function (to add new function calls, modify the ArduinoSetup and this code)
 char other_return_array[other_return_size + 1];         //Character Array for the Other Function Reply
 
+const int force_return_size = 30;                       //Maximum size for Reply String From other function (to add new function calls, modify the ArduinoSetup and this code)
+char force_return_array[force_return_size + 1];         //Character Array for the Other Function Reply
+
+
+
+//---------------------------------------------------------------------------------------------------------------------------------
+// Arduino Specific Variables
+
+// int door_state = 0;                                  // 0 = closed, 1 = open, 2 = closing/opening
+
+
+
 //---------------------------------------------------------------------------------------------------------------------------------
 //Setup Serial port and tell python that Arduino is ready
 
@@ -31,6 +43,9 @@ void setup() {
   specific_setup();
 }
 //---------------------------------------------------------------------------------------------------------------------------------
+
+
+
 
 
 //#################################################################################################################################
@@ -45,20 +60,41 @@ void specific_setup(){
 //#################################################################################################################################
 
 
+
+
+
+
 //#################################################################################################################################
 //MAIN PARSING FUNCTIONS
 
+void constant_checks(){
+
+
+                                                                                /*
+                                                                                Stuff that needs to run constantly...
+
+                                                                                For example, if you receive a command to close the door, the function "close_door()" would turn the motor on and set variable "door_closing" to TRUE.
+                                                                                In this function, you would put:
+
+                                                                                  if(door_closing == TRUE && door_closed == TRUE){
+                                                                                    stop_door();
+                                                                                  }
+
+                                                                                This way, it can continue to run other processes as the door is closeing and doesn't stop communicating for the time the door is closing.
+                                                                                */
+}
+
+
 
 //Get Data Command
-
 void get_data(){
   String data_string = "Example data : 12 Mpa : 10:12:12.345";                  //This is a temporary String variable to store the text string of the data input
   data_string.toCharArray(data_array, data_array_size+1);                       //Convert Text Reply String into Character Array and store Globally for compatability and stability (THIS LINE IS VERY IMPORTANT)
 }
 
 
-//Parse Text Command
 
+//Parse Text Command
 void parse_command(String command){
     String command_return = "";
     if (command  == "Test Command"){                                            //This is an example text parsing system, but anything can be used to parse the 'Command' input
@@ -80,8 +116,8 @@ void parse_command(String command){
 }
 
 
-//Example basic Command Outline
 
+//Example basic Command Outline 
 void other_command(){
   String data_string = "This is the return from the other command";            //Same layout as get_data()
   data_string.toCharArray(other_return_array, other_return_size+1);
@@ -90,11 +126,23 @@ void other_command(){
 //#################################################################################################################################
 
 
+
+
+
+
+
 //#################################################################################################################################
 //MAIN LOOP (Should not be edited unless adding new low-level command support)
 
-void loop() {  
-  
+void loop() {
+
+  data_array[0] = \0;                                    //Set first character of the Character arrays to the end-string character (functionally empties the string)
+  command_return_array[0] = \0;
+  other_return_array[0] = \0;
+  force_return_array[0] = \0;
+
+  constant_checks();
+
   if (Serial.available() > 0)                           //Check of there is something in the Serial port to be read  
   {  
        int inByte = Serial.read();                      //This variable stores the low level Byte command sent from python
@@ -117,6 +165,8 @@ void loop() {
           char CommandSent[Command_Limit+1];            //Reads up to Command_Limit, change to adjust limit (larger requires more ram)
           int i = 0;                                    //Set string iterator  
           Serial.println("OK");                         //Reply "OK" to Python to confirm command
+          
+          sleep(0.022);                                 //Necessary Pause
 
           while(true){                                  //Run Infinitely
             if(Serial.available()>0){                   //If there is a value in the Serial Port
@@ -131,6 +181,8 @@ void loop() {
               }
             }
           }
+          
+
           String command((char*)CommandSent);           //Convert the Command Array into a Command String
           parse_command(command);                       //Call the parse_command() function
           Serial.println(command_return_array);         //Send reply string back to Python
