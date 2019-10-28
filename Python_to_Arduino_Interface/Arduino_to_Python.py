@@ -26,6 +26,7 @@ for a in Arduino.Arduino_List:
 i = 0
 for a in Arduino.Arduino_List:
     if Arduino.Arduino_List[i][2] != "":                                # if Match_Arduino found the arduino
+        print(f"---Initializing {a[0]}")
         exec ("Arduino.Start_Serial(" + a[0] + ")")                     # Start Each Serial Interface
     i += 1
 
@@ -41,22 +42,27 @@ for a in Arduino.Arduino_List:
 while (True): #Run Forever
 
     # Data request Command
-    
-    data_from_arduino = Testduino.get_data()                            # VSCode and other IDE's may dislike the use of an object that has not been created,
-    print (data_from_arduino)                                           # This is due to the dynamic creation of the Serial Objects in the code above. Ignore these errors.
+    if (Arduino.Arduino_List[0][2] != ''):
+        data_from_arduino = Testduino.get_data()                            # VSCode and other IDE's may dislike the use of an object that has not been created,
+        print (data_from_arduino)                                           # This is due to the dynamic creation of the Serial Objects in the code above. Ignore these errors.
+    else:
+        print ("Testduino Is not connected, Failed to get data")
     
     # Command to send String Command
-    
-    reply_from_arduino = Testduino.send_command("Test Command")
-    print (reply_from_arduino)
+    if (Arduino.Arduino_List[0][2] != ''):
+        reply_from_arduino = Testduino.send_command("Test Command")
+        print (reply_from_arduino)
+    else:
+        print ("Testduino Is not connected, Failed to send Command")
                 
 
     #Extra third command for example
-    
-    reply_from_other = Testduino.other_command()
-    print (reply_from_other)
+    if (Arduino.Arduino_List[0][2] != ''):
+        reply_from_other = Testduino.other_command()
+        print (reply_from_other)
+    else:
+        print ("Testduino Is not connected, Failed to send Command")
 
 
     time.sleep(1)                                                      # Pause so the terminal doesnt fill instantly (only needed for testing)
 #---------------------------------------------------------------------------------------------------------------------------------   
-    

@@ -47,11 +47,12 @@ def Start_Serial(port):                                             # Start-Up a
     port.dtr = True                                                 # Force re-enable the Port (Forcing the port to restart allows us to not reboot the arduino every time we re-connect)
 
     
-    while (True):                                                   
+    while (True):
         serial = port.readline()                                    # Continue to read the output of the Serial Port,
-        print(serial)                                               
+        print(serial)
         if (str(serial).find("Serial Connection is Ready")):        # Until the Arduino says it is ready to Communicate
             break                                                   # At which point, Stop reading the Serial Port
+
 ###################################################################
 class Create_Serial(serial.Serial):                                 # Create Serial Object with custom Methods (Custom)
 
@@ -65,7 +66,7 @@ class Create_Serial(serial.Serial):                                 # Create Ser
                 data = str(self.readline())                         # Read reply as String
                 return(data)                                        # Return the data
             if(time.time() >= start_time + wait_max):
-                return("TIMEOUT")                                   # Returns TIMEOUT if arduino didn't reply in time
+                return("ERROR: TIMEOUT")                            # Returns TIMEOUT if arduino didn't reply in time
 
                 
     def send_command(self, command):            
@@ -73,7 +74,7 @@ class Create_Serial(serial.Serial):                                 # Create Ser
         time.sleep(0.022)           
         if(self.inWaiting()>0):                                     # Wait for Arduino to post to serial
             verification = self.readline()                          # Read the Serial line 
-            #print (verification)                                   
+            #print (verification)
             if (str(verification).find("OK")):                      # Check that "OK" verification is in the String reply from Arduino.
                 for i in range(0,len(str(command))):                # For the length of the Command String
                     self.write(str(command)[i].encode())            # Write the i'th character of the String to the Serial port
@@ -85,7 +86,7 @@ class Create_Serial(serial.Serial):                                 # Create Ser
                         data = str(self.readline())                 # Read the Data Arduino Wrote
                         return(data)
                     if(time.time() >= start_time + wait_max):       # If wait_max exceeded
-                        return("TIMEOUT")                           # Return "TIMEOUT" instead of the data (This allows the program to move on if an arduino has issues)
+                        return("ERROR: TIMEOUT")                    # Return "TIMEOUT" instead of the data (This allows the program to move on if an arduino has issues)
 
                             
     def other_command(self):            
@@ -93,11 +94,11 @@ class Create_Serial(serial.Serial):                                 # Create Ser
         start_time = time.time()
         wait_max = 0.5
         while(True):
-            if(self.inWaiting()>0):                                     # Wait for Arduino to post to Serial Port
-                reply = str(self.readline())                            # Read reply as String
-                return(reply)                                           # Return the reply from Arduino
+            if(self.inWaiting()>0):                                 # Wait for Arduino to post to Serial Port
+                reply = str(self.readline())                        # Read reply as String
+                return(reply)                                       # Return the reply from Arduino
             if(time.time() >= start_time + wait_max):
-                return("TIMEOUT")
+                return("ERROR: TIMEOUT")
 
 #if __name__ == '__main__':
 #    match_Arduinos()
