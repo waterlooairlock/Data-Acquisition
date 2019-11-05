@@ -44,7 +44,7 @@ while (True): #Run Forever
 
     # Data request Command
     if (Arduino.Arduino_List[0][2] != ''):
-        data_from_arduino = Testduino.get_data()                            # VSCode and other IDE's may dislike the use of an object that has not been created,
+        data_from_arduino = Testduino.get_data()# noqa                      
         print (data_from_arduino)                                           # This is due to the dynamic creation of the Serial Objects in the code above. Ignore these errors.
     else:
         print ("Testduino Is not connected, Failed to get data")
@@ -52,21 +52,21 @@ while (True): #Run Forever
     
     # Command to send String Command
     if (Arduino.Arduino_List[0][2] != ''):
-        reply_from_arduino = Testduino.send_command("Test Command")
+        reply_from_arduino = Testduino.send_command("Test Command") # noqa
         print (reply_from_arduino)
     else:
         print ("Testduino Is not connected, Failed to send Command")
 
     # Get Raw Pressure Data
     if (Arduino.Arduino_List[0][2] != ''):
-        reply_from_arduino = Testduino.send_command("Raw Pressure")
+        reply_from_arduino = Testduino.send_command("Raw Pressure") # noqa
         print (reply_from_arduino)
     else:
         print ("Testduino Is not connected, Failed to send Command")
     
     # Get Raw Temperature Data
     if (Arduino.Arduino_List[0][2] != ''):
-        reply_from_arduino = Testduino.send_command("Raw Temperature Celsius")
+        reply_from_arduino = Testduino.send_command("Raw Temperature Celsius") # noqa
         print (reply_from_arduino)
     else:
         print ("Testduino Is not connected, Failed to send Command")
@@ -74,7 +74,7 @@ while (True): #Run Forever
 
     #Extra third command for example
     if (Arduino.Arduino_List[0][2] != ''):
-        reply_from_other = Testduino.other_command()
+        reply_from_other = Testduino.other_command() # noqa
         print (reply_from_other)
     else:
         print ("Testduino Is not connected, Failed to send Command")
