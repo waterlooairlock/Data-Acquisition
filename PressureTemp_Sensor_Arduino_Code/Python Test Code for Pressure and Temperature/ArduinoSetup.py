@@ -25,6 +25,7 @@ class start_serial_connections():
                 print(f"--- Initializing {a[0]} ---")
                 exec (f"Start_Serial(self.{a[0]})")                     # Start Each Serial Interface
             i += 1
+        print("\n")
 ###################################################################
 def Match_Arduinos ():
     ports = list(serial.tools.list_ports.comports())                # Creates list of Available Serial Ports on the System
@@ -107,8 +108,8 @@ class Create_Serial(serial.Serial):                                 # Create Ser
                             return("ERROR: TIMEOUT")                    # Return "TIMEOUT" instead of the data (This allows the program to move on if an arduino has issues)
         except:
             return ("ERROR: Serial Communication Error")
-                
-                            
+
+
     def other_command(self):            
         try:
             self.write(b"2")                                            # Third command
