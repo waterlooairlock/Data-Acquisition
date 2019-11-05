@@ -64,7 +64,7 @@ class Create_Serial(serial.Serial):                                 # Create Ser
         while(True):
             if(self.inWaiting()>0):                                 # Wait for Arduino to post to Serial Port
                 data = str(self.readline())                         # Read reply as String
-                return(data[2:-5])                                        # Return the data
+                return(data)                                        # Return the data
             if(time.time() >= start_time + wait_max):
                 return("ERROR: TIMEOUT")                            # Returns TIMEOUT if arduino didn't reply in time
 
@@ -84,7 +84,7 @@ class Create_Serial(serial.Serial):                                 # Create Ser
                 while(True):
                     if(self.inWaiting()>0):                         # Check if Arduino Wrote anything       
                         data = str(self.readline())                 # Read the Data Arduino Wrote
-                        return(data[2:-5])
+                        return(data)
                     if(time.time() >= start_time + wait_max):       # If wait_max exceeded
                         return("ERROR: TIMEOUT")                    # Return "TIMEOUT" instead of the data (This allows the program to move on if an arduino has issues)
 
@@ -96,7 +96,7 @@ class Create_Serial(serial.Serial):                                 # Create Ser
         while(True):
             if(self.inWaiting()>0):                                 # Wait for Arduino to post to Serial Port
                 reply = str(self.readline())                        # Read reply as String
-                return(reply[2:-5])                                       # Return the reply from Arduino
+                return(reply)                                       # Return the reply from Arduino
             if(time.time() >= start_time + wait_max):
                 return("ERROR: TIMEOUT")
 

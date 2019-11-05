@@ -54,7 +54,7 @@ void setup() {
 
 void specific_setup(){
 
-  Wire.begin();
+  //Wire.begin();
   sensor.reset();
   sensor.begin();
 
