@@ -2,13 +2,13 @@
 #include <Wire.h>
 #include <SparkFun_MS5803_I2C.h> // Click here to get the library: http://librarymanager/All#SparkFun_MS5803-14BA
 
-MS5803 sensor(ADDRESS_HIGH);
+MS5803 sensor(ADDRESS_HIGH);                            // Has to be defined globally
 
 //---------------------------------------------------------------------------------------------------------------------------------
 //Global String Arrays
 const int Command_Limit = 40;                           //Limit of the length of the String Command inputs
 
-const int data_array_size = 100;                         //Maximum size for Data String to be return to Python (can be increased as needed)
+const int data_array_size = 100;                        //Maximum size for Data String to be return to Python (can be increased as needed)
 char data_array[data_array_size + 1];                   //Character Array for Data return (using a Character array is more stable than a String, and Character Arrays cannot be easily passed through function calls)
 
 const int command_return_size = 50;                     //Maximum size for Reply String From Command parsing
