@@ -71,15 +71,15 @@ class Create_Serial(serial.Serial):                                             
                 if(self.inWaiting()>0):                                             # Wait for Arduino to post to Serial Port
                     data = str(self.readline())                                     # Read reply as String
                     if "ERROR" in data:
-                        logger.warning("Reply from Arduino: %s", data[2:-5])
+                        logger.error("Reply from Arduino: %s", data[2:-5])
                     else:
                         logger.debug("Reply from Arduino: %s", data[2:-5])
                     return(data[2:-5])                                              # Return the data
                 if(time.time() >= start_time + wait_max):
-                    logger.warning("TIMEOUT - Arduino did not reply in time")
+                    logger.error("TIMEOUT - Arduino did not reply in time")
                     return("ERROR")                                        # Returns TIMEOUT if arduino didn't reply in time
         except:
-            logger.warning("Serial Communication Error")
+            logger.error("Serial Communication Error")
             return ("ERROR")
 
                 
@@ -102,15 +102,15 @@ class Create_Serial(serial.Serial):                                             
                         if(self.inWaiting()>0):                         # Check if Arduino Wrote anything       
                             data = str(self.readline())                 # Read the Data Arduino Wrote
                             if "ERROR" in data:
-                                logger.warning("Reply from Arduino: %s", data[2:-5])
+                                logger.error("Reply from Arduino: %s", data[2:-5])
                             else:
                                 logger.debug("Reply from Arduino: %s", data[2:-5])
                             return(data[2:-5])
                         if(time.time() >= start_time + wait_max):       # If wait_max exceeded
-                            logger.warning("TIMEOUT - Arduino did not reply in time")
+                            logger.error("TIMEOUT - Arduino did not reply in time")
                             return("ERROR")                    # Return "TIMEOUT" instead of the data (This allows the program to move on if an arduino has issues)
         except:
-            logger.warning("Serial Communication Error")
+            logger.error("Serial Communication Error")
             return ("ERROR")
                 
                             
@@ -125,15 +125,15 @@ class Create_Serial(serial.Serial):                                             
                 if(self.inWaiting()>0):                                 # Wait for Arduino to post to Serial Port
                     reply = str(self.readline())                        # Read reply as String
                     if "ERROR" in reply:
-                        logger.warning("Reply from Arduino: \"%s\"", reply[2:-5])
+                        logger.error("Reply from Arduino: \"%s\"", reply[2:-5])
                     else:
                         logger.debug("Reply from Arduino: \"%s\"", reply[2:-5])
                     return(reply[2:-5])                                       # Return the reply from Arduino
                 if(time.time() >= start_time + wait_max):
-                    logger.warning("TIMEOUT - Arduino did not reply in time")
+                    logger.error("TIMEOUT - Arduino did not reply in time")
                     return("ERROR")
         except:
-            logger.warning("Serial Communication Error")
+            logger.error("Serial Communication Error")
             return ("ERROR")
 ###################################################################
 class start_serial_connections():
@@ -165,13 +165,12 @@ class start_serial_connections():
 
 
     def reconnect(self, arduino_name):
-        logger = logging.get_logger("reconnect()--------")
-        logger.warning("Running reconnect attempt for %s", arduino_name)
-        logger.debug("Attempting test command for %s", arduino_name)
+        logger = logging.get_logger("reconnect()")
+        logger.warning("Starting reconnect sequence for %s", arduino_name)
         if eval(f"self.{arduino_name}.test_command()") == "Test Command Reply":
             logger.warning("Port for %s is functioning properly, no reconnect needed", arduino_name)
             return (True)
-        logger.debug("Test Command failed, reconnecting for %s", arduino_name)
+
         try:
             if  eval(f"self.{arduino_name}.is_open") == True:
                 exec(f"self.{arduino_name}.close()")
@@ -192,7 +191,6 @@ class start_serial_connections():
             for a in Arduino_List:
                 if Arduino_List[i][2] != "" and Arduino_List[i][0] == arduino_name:
                     exec (f"self.{a[0]} = Create_Serial('{a[2]}', 9600)")
-                    exec (f"Start_Serial(self.{a[0]})")
                     logger.debug("Re-connect Successful")
                     return (True)
                 i += 1

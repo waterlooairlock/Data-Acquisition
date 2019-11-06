@@ -14,9 +14,6 @@ char data_array[data_array_size + 1];                   //Character Array for Da
 const int command_return_size = 50;                     //Maximum size for Reply String From Command parsing
 char command_return_array[command_return_size + 1];     //Character Array for Command Parsing Reply
 
-const int other_return_size = 50;                       //Maximum size for Reply String From other function (to add new function calls, modify the ArduinoSetup and this code)
-char other_return_array[other_return_size + 1];         //Character Array for the Other Function Reply
-
 //Global Specific Variables
 double pressure_baseline;
 
@@ -65,14 +62,12 @@ void specific_setup(){
 void get_pressure(){
   double pressure_abs = sensor.getPressure(ADC_4096);
   String pressure_data = "Pressure: " + String(pressure_abs);
-  //String pressure_data = "Test Pressure";
   pressure_data.toCharArray(pressure_data_array, pressure_data_size+1);
 }
 
 void get_temperature(){
   float temperature_c = sensor.getTemperature(CELSIUS, ADC_512);
   String temperature_data = "Temperature: " + String(temperature_c);
-  //String temperature_data = "Test Temperature";
   temperature_data.toCharArray(temperature_data_array, temperature_data_size+1);
 }
 
@@ -140,9 +135,9 @@ void parse_command(String command){
 
 
 //Example basic Command Outline 
-void other_command(){
-  String data_string = "This is the return from the other command";            //Same layout as get_data()
-  data_string.toCharArray(other_return_array, other_return_size+1);
+void test_command(){
+  char data_string [] = "Test Command Reply";            //Same layout as get_data()
+  Serial.println(data_string);
 }
 
 //#################################################################################################################################
@@ -160,7 +155,6 @@ void loop() {
 
   data_array[0] = '\0';                                    //Set first character of the Character arrays to the end-string character (functionally empties the string)
   command_return_array[0] = '\0';
-  other_return_array[0] = '\0';
 
   constant_checks();
 
@@ -216,8 +210,7 @@ void loop() {
        //Extra command for example purposes
        
        if (inByte == '2'){
-         other_command();
-         Serial.println(other_return_array);          //String to send back to Python Script (replace with data string)
+         test_command();                                //String to send back to Python Script (replace with data string)
        }
        //------------------------------------------
   }  

@@ -8,15 +8,16 @@
 # 
 
 import time                                                             # Needed for pauses in testing
+import LoggingSetup as logging
 import ArduinoSetup as Arduino                                          # API Library for WatLock Arduino Commands
 
+logger = logging.get_logger("Master")
 
 # LIST OF ARDUINOS
 #Arduino.Arduino_List.append(["SERIAL_PORT_NAME"    , "SERIAL_#_OF_ARDUINO"     , ""])
 Arduino.Arduino_List.append (["Testduino"           , "85735313033351409161"    , ""]) 
 
 Arduinos = Arduino.start_serial_connections()
-print ("\n")
 
 #---------------------------------------------------------------------------------------------------------------------------------
 #MAIN COMMAND LOOP
@@ -30,49 +31,54 @@ while (True): #Run Forever
 
 
     # Data request Command
-    if (Arduino.Arduino_List[0][2] != ''):
-        reply_from_arduino = Arduinos.Testduino.get_data() # noqa     
-        print (reply_from_arduino)                                           # This is due to the dynamic creation of the Serial Objects in the code above. Ignore these errors.
-    else:
-        print ("ERROR: No Connection")
+    try:
+        reply_from_arduino = Arduinos.Testduino.get_data()
+        if not "ERROR" in reply_from_arduino:
+            print (reply_from_arduino)
+    except:
+        logger.error("Arduino \"Testduino\" was not connected")
     
 
     # Command to send String Command
-    if (Arduino.Arduino_List[0][2] != ''):
-        reply_from_arduino = Arduinos.Testduino.send_command("Test Command") # noqa
-        print (reply_from_arduino)
-    else:
-        print ("ERROR: No Connection")
+    try:
+        reply_from_arduino = Arduinos.Testduino.send_command("Test Command")
+        if not "ERROR" in reply_from_arduino:
+            print (reply_from_arduino)
+    except:
+        logger.error("Arduino \"Testduino\" was not connected")
 
 
 
     # Get Raw Pressure Data
-    if (Arduino.Arduino_List[0][2] != ''):
-        reply_from_arduino = Arduinos.Testduino.send_command("Raw Pressure") # noqa
-        print (reply_from_arduino)
-    else:
-        print ("ERROR: No Connection")
+    try:
+        reply_from_arduino = Arduinos.Testduino.send_command("Raw Pressure")
+        if not "ERROR" in reply_from_arduino:
+            print (reply_from_arduino)
+    except:
+        logger.error("Arduino \"Testduino\" was not connected")
     
 
 
     # Get Raw Temperature Data
-    if (Arduino.Arduino_List[0][2] != ''):
-        reply_from_arduino = Arduinos.Testduino.send_command("Raw Temperature Celsius") # noqa
-        print (reply_from_arduino)
-    else:
-        print ("ERROR: No Connection")
-                
+    try:
+        reply_from_arduino = Arduinos.Testduino.send_command("Raw Temperature Celsius")
+        if not "ERROR" in reply_from_arduino:
+            print (reply_from_arduino)
+    except:
+        logger.error("Arduino \"Testduino\" was not connected")
 
 
-    #Extra third command for example
-    if (Arduino.Arduino_List[0][2] != ''):
-        reply_from_arduino = Arduinos.Testduino.other_command() # noqa
-        print (reply_from_arduino)
-    else:
-        print ("ERROR: No Connection")
-
+    
+    # Check if Arduino is functioning properly and reconnect if not
+    try:
+        reply_from_arduino = Arduinos.Testduino.test_command()
+        if "ERROR" in reply_from_arduino:
+            logger.error("Arduino \"Testduino\" is not communicating properly")
+            Arduinos.reconnect("Testduino")
+    except:
+        logger.error("Arduino \"Testduino\" was not connected")
 
 
     print ("\n")
-    time.sleep(0.5)                                                      # Pause so the terminal doesnt fill instantly (only needed for testing)
+    time.sleep(2)                                                      # Pause so the terminal doesnt fill instantly (only needed for testing)
 #---------------------------------------------------------------------------------------------------------------------------------

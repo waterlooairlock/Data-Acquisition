@@ -30,27 +30,32 @@ while (True): #Run Forever
 
     # Data request Command
     try:
-        reply_from_arduino = Arduinos.Testduino.get_data()                               # VSCode and other IDE's may dislike the use of an object that has not been created,
-        print (reply_from_arduino)                                                       # This is due to the dynamic creation of the Serial Objects in the code above. Ignore these errors.
+        reply_from_arduino = Arduinos.Testduino.get_data()
+        if not "ERROR" in reply_from_arduino:
+            print (reply_from_arduino)
     except:
-        logger.warning("ERROR: Arduino \"Testduino\" was not connected")
+        logger.error("Arduino \"Testduino\" was not connected")                
     
 
-    # Command to send String Command
+    # Send text Command
     try:
         reply_from_arduino = Arduinos.Testduino.send_command("Test Command")
-        print (reply_from_arduino)
+        if not "ERROR" in reply_from_arduino:
+            print (reply_from_arduino)
     except:
-        logger.warning("ERROR: Arduino \"Testduino\" was not connected")
+        logger.error("Arduino \"Testduino\" was not connected")
 
 
-
+    # Check if Arduino is functioning properly and reconnect if not
     try:
-        Arduinos.reconnect("Testduino")
+        reply_from_arduino = Arduinos.Testduino.test_command()
+        if "ERROR" in reply_from_arduino:
+            logger.error("Arduino \"Testduino\" is not communicating properly")
+            Arduinos.reconnect("Testduino")
     except:
-        logger.warning("ERROR: Arduino cannot be found for restart")
+        logger.error("Arduino \"Testduino\" was not connected")
 
 
     print ("\n")
-    time.sleep(1)                                                      # Pause so the terminal doesnt fill instantly (only needed for testing)
+    time.sleep(2)                                                      # Pause so the terminal doesnt fill instantly (only needed for testing)
 #---------------------------------------------------------------------------------------------------------------------------------   
