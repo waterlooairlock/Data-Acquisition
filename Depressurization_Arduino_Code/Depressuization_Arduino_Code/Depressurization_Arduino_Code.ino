@@ -1,26 +1,30 @@
-/*
- This program is a basic outline of interaction between
-a Python Script and an Arduino.
 
-The get_data function will deal with getting data from the sensor/s attached to the arduino
+#include <Wire.h>
+#include <SparkFun_MS5803_I2C.h> // Click here to get the library: http://librarymanager/All#SparkFun_MS5803-14BA
 
-The parse_command function will deal with calling functions created 
-*/
-
+MS5803 sensor(ADDRESS_HIGH);
 
 //---------------------------------------------------------------------------------------------------------------------------------
-//Global Variables
+//Global String Arrays
 const int Command_Limit = 40;                           //Limit of the length of the String Command inputs
 
 const int data_array_size = 100;                         //Maximum size for Data String to be return to Python (can be increased as needed)
 char data_array[data_array_size + 1];                   //Character Array for Data return (using a Character array is more stable than a String, and Character Arrays cannot be easily passed through function calls)
 
-const int command_return_size = 30;                     //Maximum size for Reply String From Command parsing
+const int command_return_size = 50;                     //Maximum size for Reply String From Command parsing
 char command_return_array[command_return_size + 1];     //Character Array for Command Parsing Reply
 
-const int force_return_size = 30;                       //Maximum size for Reply String From other function (to add new function calls, modify the ArduinoSetup and this code)
-char force_return_array[force_return_size + 1];         //Character Array for the Other Function Reply
+const int other_return_size = 50;                       //Maximum size for Reply String From other function (to add new function calls, modify the ArduinoSetup and this code)
+char other_return_array[other_return_size + 1];         //Character Array for the Other Function Reply
 
+//Global Specific Variables
+double pressure_baseline;
+
+const int pressure_data_size = 40;
+char pressure_data_array[pressure_data_size+1];
+
+const int temperature_data_size = 40;
+char temperature_data_array[pressure_data_size+1];
 
 
 //---------------------------------------------------------------------------------------------------------------------------------
@@ -49,8 +53,35 @@ void setup() {
 //SPACE FOR ARDUINO SPECIFIC FUNCTIONS
 
 void specific_setup(){
-  pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, LOW);
+
+  Wire.begin();
+  sensor.reset();
+  sensor.begin();
+
+  pressure_baseline = sensor.getPressure(ADC_4096);
+}
+
+
+void get_pressure(){
+  double pressure_abs = sensor.getPressure(ADC_4096);
+  String pressure_data = "Pressure: " + String(pressure_abs);
+  //String pressure_data = "Test Pressure";
+  pressure_data.toCharArray(pressure_data_array, pressure_data_size+1);
+}
+
+void get_temperature(){
+  float temperature_c = sensor.getTemperature(CELSIUS, ADC_512);
+  String temperature_data = "Temperature: " + String(temperature_c);
+  //String temperature_data = "Test Temperature";
+  temperature_data.toCharArray(temperature_data_array, temperature_data_size+1);
+}
+
+double read_pressure(){
+  return sensor.getPressure(ADC_4096);
+}
+
+void start_depressurization(){
+
 }
 
 
@@ -85,8 +116,12 @@ void constant_checks(){
 
 //Get Data Command
 void get_data(){
-  String data_string = "Example data : 12 Mpa : 10:12:12.345";                  //This is a temporary String variable to store the text string of the data input
-  data_string.toCharArray(data_array, data_array_size+1);                       //Convert Text Reply String into Character Array and store Globally for compatability and stability (THIS LINE IS VERY IMPORTANT)
+  get_pressure();
+  get_temperature();
+
+  strcpy(data_array,pressure_data_array);
+  strcat(data_array," | ");
+  strcat(data_array,temperature_data_array);
 }
 
 
@@ -97,13 +132,17 @@ void parse_command(String command){
     if (command  == "Test Command"){                                            //This is an example text parsing system, but anything can be used to parse the 'Command' input
       command_return = "Test Command received";                                 //Store the text Reply in the command_return variable
     }
-    else if (command == "LED On"){
-      digitalWrite(LED_BUILTIN, HIGH);
-      command_return = "Built-In LED is set to On";
+    else if (command == "Raw Pressure"){
+      command_return = String(sensor.getPressure(ADC_4096));
     }
-    else if (command == "LED Off"){
-      digitalWrite(LED_BUILTIN, LOW);
-      command_return = "Built-In LED is set to Off";
+    else if (command == "Raw Temperature Celsius"){
+      command_return = String(sensor.getTemperature(CELSIUS,ADC_512));
+    }
+    else if (command == "Depressurize"){
+      start_depressurization();
+    }
+    else if (command == "Pressurize"){
+      
     }
     else {
       command_return = "Command not recognized";
@@ -112,6 +151,13 @@ void parse_command(String command){
     command_return.toCharArray(command_return_array, command_return_size+1);    //Convert Text Reply String into Character Array and store Globally
 }
 
+
+
+//Example basic Command Outline 
+void other_command(){
+  String data_string = "This is the return from the other command";            //Same layout as get_data()
+  data_string.toCharArray(other_return_array, other_return_size+1);
+}
 
 //#################################################################################################################################
 
@@ -128,7 +174,7 @@ void loop() {
 
   data_array[0] = '\0';                                    //Set first character of the Character arrays to the end-string character (functionally empties the string)
   command_return_array[0] = '\0';
-  force_return_array[0] = '\0';
+  other_return_array[0] = '\0';
 
   constant_checks();
 
@@ -184,8 +230,8 @@ void loop() {
        //Extra command for example purposes
        
        if (inByte == '2'){
-         char return_array[] = "Test Command Reply";
-         Serial.println(return_array);          //String to send back to Python Script (replace with data string)
+         other_command();
+         Serial.println(other_return_array);          //String to send back to Python Script (replace with data string)
        }
        //------------------------------------------
   }  

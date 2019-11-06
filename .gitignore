@@ -1,4 +1,5 @@
 ## CUSTOM GIT IGNORE PARAMETERS
+*.vscode*
 *.code-workspace
 desktop.ini
 
