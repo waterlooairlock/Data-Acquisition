@@ -11,7 +11,7 @@ import time                                                             # Needed
 import LoggingSetup as logging
 import ArduinoSetup as Arduino                                          # API Library for WatLock Arduino Commands
 
-logger = logging.get_logger("Master")
+logger = logging.get_logger("MASTER----------------")
 
 # LIST OF ARDUINOS
 #Arduino.Arduino_List.append(["SERIAL_PORT_NAME"    , "SERIAL_#_OF_ARDUINO"     , ""])

@@ -193,7 +193,7 @@ class start_serial_connections():
                 if Arduino_List[i][2] != "" and Arduino_List[i][0] == arduino_name:
                     exec (f"self.{a[0]} = Create_Serial('{a[2]}', 9600)")
                     exec (f"Start_Serial(self.{a[0]})")
-                    logger.debug("Re-connect Successful")
+                    logger.warning("Re-connect Successful")
                     return (True)
                 i += 1
             logger.warning("Re-connect Failed")

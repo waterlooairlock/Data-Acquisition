@@ -5,7 +5,7 @@ import logging
 def get_logger(name):
     if not logging.getLogger(name).handlers:
         log_format = '%(asctime)s  %(name)30s : [%(levelname)s] > %(message)-65s [%(filename)-20s | ln:%(lineno)d]'
-        logging.basicConfig(level=logging.DEBUG,        # NOTE: Change Log Level for RunLog.log File
+        logging.basicConfig(level=logging.INFO,        # NOTE: Change Log Level for RunLog.log File
                             format=log_format,
                             filename='RunLog.log',
                             filemode='w')
