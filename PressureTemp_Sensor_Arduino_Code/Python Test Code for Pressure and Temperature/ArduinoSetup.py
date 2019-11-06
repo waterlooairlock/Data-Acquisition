@@ -11,22 +11,6 @@ import serial.tools.list_ports
 Arduino_List = [] # [English Name, Serial #, Port]
 
 ###################################################################
-class start_serial_connections():
-    def __init__(self):
-        Match_Arduinos()                                                # Locate Arduinos based on Serial Number
-        i = 0
-        for a in Arduino_List:
-            if Arduino_List[i][2] != "":                                # if Match_Arduino found the arduino
-                exec (f"self.{a[0]} = Create_Serial('{a[2]}', 9600)")  # Create Serial Objects for each Arduino in the list
-            i += 1
-        i = 0
-        for a in Arduino_List:
-            if Arduino_List[i][2] != "":                                # if Match_Arduino found the arduino
-                print(f"--- Initializing {a[0]} ---")
-                exec (f"Start_Serial(self.{a[0]})")                     # Start Each Serial Interface
-            i += 1
-        print("\n")
-###################################################################
 def Match_Arduinos ():
     ports = list(serial.tools.list_ports.comports())                # Creates list of Available Serial Ports on the System
     print("\n------List of Serial Ports Found------")               # Formatting Text
@@ -108,8 +92,8 @@ class Create_Serial(serial.Serial):                                 # Create Ser
                             return("ERROR: TIMEOUT")                    # Return "TIMEOUT" instead of the data (This allows the program to move on if an arduino has issues)
         except:
             return ("ERROR: Serial Communication Error")
-
-
+                
+                            
     def other_command(self):            
         try:
             self.write(b"2")                                            # Third command
@@ -123,6 +107,43 @@ class Create_Serial(serial.Serial):                                 # Create Ser
                     return("ERROR: TIMEOUT")
         except:
             return ("ERROR: Serial Communication Error")
+###################################################################
+class start_serial_connections():
+
+
+    def __init__(self):
+        Match_Arduinos()                                                # Locate Arduinos based on Serial Number
+        i = 0
+        for a in Arduino_List:
+            if Arduino_List[i][2] != "":                                # if Match_Arduino found the arduino
+                exec (f"self.{a[0]} = Create_Serial('{a[2]}', 9600)")  # Create Serial Objects for each Arduino in the list
+            i += 1
+        i = 0
+        for a in Arduino_List:
+            if Arduino_List[i][2] != "":                                # if Match_Arduino found the arduino
+                print(f"--- Initializing {a[0]} ---")
+                exec (f"Start_Serial(self.{a[0]})")                     # Start Each Serial Interface
+            i += 1
+        print("\n")
+
+
+    def reconnect_all(self):
+        self.__init__()
+
+
+    def attempt_reconnect(self, arduino_name):
+        try:
+            i = 0
+            for a in Arduino_List:
+                if Arduino_List[i][2] != "" and Arduino_List[i][0] == arduino_name:
+                    exec (f"self.{a[0]} = Create_Serial('{a[2]}', 9600)")
+                    print ("Re-connect Successful")
+                    return
+                i += 1
+                
+        except:
+            print ("Re-connect Failed")
+
 ###################################################################
 
 
