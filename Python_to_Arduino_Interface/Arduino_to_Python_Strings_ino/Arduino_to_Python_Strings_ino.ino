@@ -7,6 +7,8 @@ The get_data function will deal with getting data from the sensor/s attached to 
 The parse_command function will deal with calling functions created 
 */
 
+const int baud_rate = 9600;
+const float pause = .022 * (9600/baud_rate);
 
 //---------------------------------------------------------------------------------------------------------------------------------
 //Global Variables
@@ -34,7 +36,7 @@ char force_return_array[force_return_size + 1];         //Character Array for th
 //Setup Serial port and tell python that Arduino is ready
 
 void setup() {
-  Serial.begin(9600);                                   //Initialize serial port at 9600 bps (This speed can be increased by using standard values, but also update the value in the Serial Object Creation calls of the main code)
+  Serial.begin(baud_rate);                                   //Initialize serial port at 9600 bps (This speed can be increased by using standard values, but also update the value in the Serial Object Creation calls of the main code)
   while (!Serial){}                                     //Wait for Serial Connection to establish (needed for stable USB interface)
   Serial.println("Serial Connection is Ready");         //Send "System Ready" message to Serial Port to inform Python that it is ready to receive Commands
   specific_setup();
@@ -155,25 +157,9 @@ void loop() {
           int i = 0;                                    //Set string iterator  
           Serial.println("OK");                         //Reply "OK" to Python to confirm command
           
-          delay(0.022);                                 //Necessary Pause
+          delay(pause);                                 //Necessary Pause
 
-          while(true){                                  //Run Infinitely
-            if(Serial.available()>0){                   //If there is a value in the Serial Port
-              char input = Serial.read();               //Read Character from the Serial Port
-              if (input != '1' || i != 0){              //If it is either not '1' or the first value (The Serial port on the Arduino wants to read a 1 before the text string, cant figure out why, but this ignores any 1 as the first character)
-                CommandSent[i] = input;                 //Place the Character into the Character array
-                if (CommandSent[i] == '~'){             //If the Character pulled from the Serial Port is a '~',
-                  CommandSent[i] = 0;                   //replace it with the null character value of 0 (When the Arduino creates the string from the array of characters, it stops at the null character)
-                  break;                                //Since Python finished sending the command, break the While loop
-                }
-                i = i + 1;                              //Interate Character count
-              }
-            }
-          }
-          
-
-          String command((char*)CommandSent);           //Convert the Command Array into a Command String
-          parse_command(command);                       //Call the parse_command() function
+          parse_command(Serial.readStringUntil('~'));                       //Call the parse_command() function
           Serial.println(command_return_array);         //Send reply string back to Python
        }
        //------------------------------------------

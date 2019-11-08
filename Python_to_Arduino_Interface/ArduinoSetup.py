@@ -13,6 +13,10 @@ import serial.tools.list_ports
 Arduino_List = [] # [English Name, Serial #, Port]
 logger = logging.get_logger("Arduino Setup")
 
+max_wait_time = .05
+global_baud_rate = 9600
+standard_sleep_time = 0.022 * (9600/global_baud_rate)
+
 ###################################################################
 def Match_Arduinos ():
     logger = logging.get_logger("Match_Arduinos()")                     # Create Logger object for this function
@@ -66,7 +70,6 @@ class Create_Serial(serial.Serial):                                             
             logger.debug("Writing   \"0\"  to Arduino")
             self.write(b'0')                                                        # Write a '0' bit to the Arduino to say "Send me data"
             start_time = time.time()                                                # Set timer for wait amount
-            wait_max = 0.5                                                          # Wait up to 0.5 Seconds for arduino to reply (CHANGE THIS VALUE WITH CARE)
             while(True):            
                 if(self.inWaiting()>0):                                             # Wait for Arduino to post to Serial Port
                     data = str(self.readline())                                     # Read reply as String
@@ -75,7 +78,7 @@ class Create_Serial(serial.Serial):                                             
                     else:
                         logger.debug("Reply from Arduino: %s", data[2:-5])
                     return(data[2:-5])                                              # Return the data
-                if(time.time() >= start_time + wait_max):
+                if(time.time() >= start_time + max_wait_time):
                     logger.warning("TIMEOUT - Arduino did not reply in time")
                     return("ERROR")                                        # Returns TIMEOUT if arduino didn't reply in time
         except:
@@ -85,19 +88,17 @@ class Create_Serial(serial.Serial):                                             
                 
     def send_command(self, command):
         logger = logging.get_logger("send_command()")
+        command_string = command + "~"
         try:
             logger.debug("Sending   \"1\"  to arduino")
             self.write(b'1')                                            # Write a '1' bit to tell the Arduino "I want to send a Command"
-            time.sleep(0.022)           
+            time.sleep(standard_sleep_time)           
             if(self.inWaiting()>0):                                     # Wait for Arduino to post to serial
                 verification = self.readline()                          # Read the Serial line 
                 if (str(verification).find("OK")):                      # Check that "OK" verification is in the String reply from Arduino.
                     logger.debug("Receieved \"OK\" from Arduino")
-                    for i in range(0,len(str(command))):                # For the length of the Command String
-                        self.write(str(command)[i].encode())            # Write the i'th character of the String to the Serial port
-                    self.write(b'~')                                    # Once the entire string has been written, Write a '~' to the Serial Port as an end-command character (can use any Character, Just change in Arduino code)
+                    self.write(command_string.encode())
                     start_time = time.time()                            # Set timer for wait amount
-                    wait_max = 0.5                                      # Wait up to 0.5 Seconds for arduino to reply (CHANGE THIS VALUE WITH CARE)           
                     while(True):
                         if(self.inWaiting()>0):                         # Check if Arduino Wrote anything       
                             data = str(self.readline())                 # Read the Data Arduino Wrote
@@ -106,7 +107,7 @@ class Create_Serial(serial.Serial):                                             
                             else:
                                 logger.debug("Reply from Arduino: %s", data[2:-5])
                             return(data[2:-5])
-                        if(time.time() >= start_time + wait_max):       # If wait_max exceeded
+                        if(time.time() >= start_time + max_wait_time):       # If max_wait_time exceeded
                             logger.warning("TIMEOUT - Arduino did not reply in time")
                             return("ERROR")                    # Return "TIMEOUT" instead of the data (This allows the program to move on if an arduino has issues)
         except:
@@ -120,7 +121,6 @@ class Create_Serial(serial.Serial):                                             
             logger.debug("Writing   \"2\"  to Arduino")
             self.write(b"2")                                            # Third command
             start_time = time.time()
-            wait_max = 0.5
             while(True):
                 if(self.inWaiting()>0):                                 # Wait for Arduino to post to Serial Port
                     reply = str(self.readline())                        # Read reply as String
@@ -129,17 +129,26 @@ class Create_Serial(serial.Serial):                                             
                     else:
                         logger.debug("Reply from Arduino: \"%s\"", reply[2:-5])
                     return(reply[2:-5])                                       # Return the reply from Arduino
-                if(time.time() >= start_time + wait_max):
+                if(time.time() >= start_time + max_wait_time):
                     logger.warning("TIMEOUT - Arduino did not reply in time")
                     return("ERROR")
         except:
             logger.warning("Serial Communication Error")
             return ("ERROR")
+
 ###################################################################
 class start_serial_connections():
 
 
-    def __init__(self):
+    def __init__(self, baud_rate=global_baud_rate):
+        
+        global global_baud_rate
+        global standard_sleep_time
+
+        if baud_rate is not global_baud_rate:
+            global_baud_rate = baud_rate
+            standard_sleep_time = 0.022 * (9600/global_baud_rate)
+        
         logger = logging.get_logger("start_serial_connections()")
         Match_Arduinos()                                                # Locate Arduinos based on Serial Number
         i = 0
@@ -147,7 +156,7 @@ class start_serial_connections():
         for a in Arduino_List:
             if Arduino_List[i][2] != "":                                # if Match_Arduino found the arduino
                 logger.debug("--- creating %s", a[0])
-                exec (f"self.{a[0]} = Create_Serial('{a[2]}', 9600)")   # Create Serial Objects for each Arduino in the list
+                exec (f"self.{a[0]} = Create_Serial('{a[2]}', {baud_rate})")   # Create Serial Objects for each Arduino in the list
             i += 1
         logger.info("--- Starting Serial objects ---")
         i = 0
@@ -156,7 +165,6 @@ class start_serial_connections():
                 logger.debug("--- starting %s", a[0])
                 exec (f"Start_Serial(self.{a[0]})")                     # Start Each Serial Interface
             i += 1
-
 
     def reconnect_all(self):
         logger = logging.get_logger("reconnect_all()")

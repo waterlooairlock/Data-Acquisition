@@ -8,8 +8,8 @@
 # 
 
 import time                                                             # Needed for pauses in testing
-from . import LoggingSetup as logging
-from . import ArduinoSetup as Arduino                                          # API Library for WatLock Arduino Commands
+import LoggingSetup as logging
+import ArduinoSetup as Arduino                                          # API Library for WatLock Arduino Commands
 
 logger = logging.get_logger("MASTER----------------")
 
@@ -71,10 +71,13 @@ while (True): #Run Forever
     
     # Check if Arduino is functioning properly and reconnect if not
     try:
+        logger.debug("Checking communication of \"Testduino\"")
         reply_from_arduino = Arduinos.Testduino.test_command()
         if "ERROR" in reply_from_arduino:
             logger.error("Arduino \"Testduino\" is not communicating properly")
             Arduinos.reconnect("Testduino")
+        else:
+            logger.debug("Arduino \"Testduino\" is communicating properly")
     except:
         logger.error("Arduino \"Testduino\" was not connected")
 
