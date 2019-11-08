@@ -25,7 +25,7 @@ def Match_Arduinos ():
     for p in ports:                                                     # For every available port
         logger.debug("%s | %s", str(p), p.hwid)                         # Log the available ports
         for a in Arduino_List:                                          # For every Arduino Specified in the main code
-            if a[1] in p.hwid:                                          # Check of the Serial Number matches the Serial Number of the Port
+            if f"SER={a[1]}" in p.hwid:                                          # Check of the Serial Number matches the Serial Number of the Port
                 a[2] = p.device                                         # If it does, Set the 3rd value of the Serial Port List array to the Port location
                 logger.info("Port %s is %s ", p.device, a[0])           # Log the connections made
 
@@ -54,6 +54,8 @@ def Start_Serial(port):                                             # Start-Up a
     port.dtr = False                                                # Force Disable the Port
     time.sleep(0.022)                                               # Pause (VERY IMPORTANT)
     port.dtr = True                                                 # Force re-enable the Port (Forcing the port to restart allows us to not reboot the arduino every time we re-connect)
+
+    port.write(b'0')                                                # Send initial bit to force the serial port on MKR1000 to start
 
     
     while (True):
