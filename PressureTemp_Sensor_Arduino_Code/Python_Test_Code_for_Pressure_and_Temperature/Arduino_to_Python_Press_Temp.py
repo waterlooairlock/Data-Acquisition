@@ -17,69 +17,36 @@ logger = logging.get_logger("MASTER----------------")
 #Arduino.Arduino_List.append(["SERIAL_PORT_NAME"    , "SERIAL_#_OF_ARDUINO"     , ""])
 Arduino.Arduino_List.append (["Testduino"           , "85735313033351409161"    , ""]) 
 
+
+#Setup Serial Connections based on List above
 Arduinos = Arduino.start_serial_connections()
+
+print("\n")
 
 #---------------------------------------------------------------------------------------------------------------------------------
 #MAIN COMMAND LOOP
 
-# This loop just repeatedly sends 3 different commands,
-# the First being a data request, where the arduino just sends back data
-# the Second being a command, where the arduino must receive a string command and then reply
-# the Third being another command, could serve any purpose (possibly return the arduino information)
-
-while (True): #Run Forever
-
+while (True): 
 
     # Data request Command
-    try:
-        reply_from_arduino = Arduinos.Testduino.get_data()
-        if not "ERROR" in reply_from_arduino:
-            print (reply_from_arduino)
-    except:
-        logger.error("Arduino \"Testduino\" was not connected")
-    
+    print(Arduinos.Testduino.get_data())
 
     # Command to send String Command
-    try:
-        reply_from_arduino = Arduinos.Testduino.send_command("Test Command")
-        if not "ERROR" in reply_from_arduino:
-            print (reply_from_arduino)
-    except:
-        logger.error("Arduino \"Testduino\" was not connected")
+    print(Arduinos.Testduino.send_command("Test Command"))
 
 
 
     # Get Raw Pressure Data
-    try:
-        reply_from_arduino = Arduinos.Testduino.send_command("Raw Pressure")
-        if not "ERROR" in reply_from_arduino:
-            print (reply_from_arduino)
-    except:
-        logger.error("Arduino \"Testduino\" was not connected")
-    
-
+    print(Arduinos.Testduino.send_command("Raw Pressure"))
 
     # Get Raw Temperature Data
-    try:
-        reply_from_arduino = Arduinos.Testduino.send_command("Raw Temperature Celsius")
-        if not "ERROR" in reply_from_arduino:
-            print (reply_from_arduino)
-    except:
-        logger.error("Arduino \"Testduino\" was not connected")
+    print(Arduinos.Testduino.send_command("Raw Temperature Celsius"))
 
 
     
+
     # Check if Arduino is functioning properly and reconnect if not
-    try:
-        logger.debug("Checking communication of \"Testduino\"")
-        reply_from_arduino = Arduinos.Testduino.test_command()
-        if "ERROR" in reply_from_arduino:
-            logger.error("Arduino \"Testduino\" is not communicating properly")
-            Arduinos.reconnect("Testduino")
-        else:
-            logger.debug("Arduino \"Testduino\" is communicating properly")
-    except:
-        logger.error("Arduino \"Testduino\" was not connected")
+    Arduinos.check_connections()
 
 
     print ("\n")
