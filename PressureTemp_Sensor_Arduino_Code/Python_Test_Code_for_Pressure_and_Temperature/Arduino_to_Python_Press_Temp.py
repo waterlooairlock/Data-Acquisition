@@ -15,11 +15,11 @@ logger = logging.get_logger("MASTER----------------")
 
 # LIST OF ARDUINOS
 #Arduino.Arduino_List.append(["SERIAL_PORT_NAME"    , "SERIAL_#_OF_ARDUINO"     , ""])
-Arduino.Arduino_List.append (["Testduino"           , "85735313033351409161"    , ""]) 
+Arduino.Arduino_List.append (["Testduino"           , "6"    , ""]) 
 
 
 #Setup Serial Connections based on List above
-Arduinos = Arduino.start_serial_connections()
+Arduinos = Arduino.initialize_serial_connections()
 
 print("\n")
 

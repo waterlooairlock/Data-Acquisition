@@ -1,5 +1,6 @@
 
 #include <Wire.h>
+#include <ArduinoUniqueID.h>
 #include <SparkFun_MS5803_I2C.h> // Click here to get the library: http://librarymanager/All#SparkFun_MS5803-14BA
 
 MS5803 sensor(ADDRESS_HIGH);                            // Has to be defined globally
@@ -210,6 +211,15 @@ void loop() {
        
        if (inByte == '2'){
          test_command();                                //String to send back to Python Script (replace with data string)
+       }
+       //------------------------------------------
+       
+
+
+       //------------------------------------------
+       // Output the processor serial #
+       if (inByte == '#'){
+         UniqueIDdump(Serial);
        }
        //------------------------------------------
   }  

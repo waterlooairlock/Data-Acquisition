@@ -15,11 +15,11 @@ logger = logging.get_logger("MASTER----------------")
 
 # LIST OF ARDUINOS
 #Arduino.Arduino_List.append(["SERIAL_PORT_NAME"    , "SERIAL_#_OF_ARDUINO"                 , ""])
-Arduino.Arduino_List.append (["Testduino"           , "85735313033351409161"                , ""])
-Arduino.Arduino_List.append (["Arduinot"            , "6"                                   , ""])
+Arduino.Arduino_List.append (["Testduino"           , "UniqueID: 58 37 33 33 30 39 0E 0C 11"                        , ""])
+Arduino.Arduino_List.append (["Arduinot"            , "UniqueID: 27 F4 A2 EF 51 50 32 31 43 20 20 20 FF 0E 17 3C"   , ""])
 
 #Setup Serial Connections based on List above
-Arduinos = Arduino.initialize_serial_connections(28800)
+Arduinos = Arduino.initialize_serial_connections(9600)
 
 print("\n")
 
@@ -41,14 +41,21 @@ while (True):
     
     # Send text Command
     print(Arduinos.Arduinot.send_command("Test Command"))
+    
+    
+    
 
 
+    if not Arduinos.Testduino.check_connection():
+        Arduinos.Testduino.reconnect()
 
-    #Arduinos.Testduino.reconnect()
-    #Arduinos.Testduino.check_connection()
+    if not Arduinos.Arduinot.check_connection():
+        Arduinos.Arduinot.reconnect()
 
-    #Arduinos.reconnect_all()
-    #Arduinos.check_connections()
+    #print(Arduinos.reconnect_all())
+
+    print(Arduinos.check_all_connections())
+    
 
 
     print ("\n")

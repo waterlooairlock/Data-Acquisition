@@ -7,7 +7,9 @@ The get_data function will deal with getting data from the sensor/s attached to 
 The parse_command function will deal with calling functions created 
 */
 
-const int baud_rate = 28800;
+#include <ArduinoUniqueID.h>
+
+const int baud_rate = 9600;
 const float pause = .022 * (9600/baud_rate);
 
 //---------------------------------------------------------------------------------------------------------------------------------
@@ -171,6 +173,15 @@ void loop() {
        if (inByte == '2'){
          char return_array[] = "Test Command Reply";
          Serial.println(return_array);          //String to send back to Python Script (replace with data string)
+       }
+       //------------------------------------------
+
+
+
+       //------------------------------------------
+       // Output the processor serial #
+       if (inByte == '#'){
+         UniqueIDdump(Serial);
        }
        //------------------------------------------
   }  
