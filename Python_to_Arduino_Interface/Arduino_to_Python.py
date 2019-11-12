@@ -19,7 +19,7 @@ Arduino.Arduino_List.append (["Testduino"           , "85735313033351409161"    
 Arduino.Arduino_List.append (["Arduinot"            , "6"                                   , ""])
 
 #Setup Serial Connections based on List above
-Arduinos = Arduino.start_serial_connections()
+Arduinos = Arduino.initialize_serial_connections(28800)
 
 print("\n")
 
@@ -44,7 +44,11 @@ while (True):
 
 
 
-    Arduinos.check_connections()
+    #Arduinos.Testduino.reconnect()
+    #Arduinos.Testduino.check_connection()
+
+    #Arduinos.reconnect_all()
+    #Arduinos.check_connections()
 
 
     print ("\n")

@@ -69,10 +69,11 @@ def Start_Serial(port):                                             # Start-Up a
 ###################################################################
 class Create_Serial():                                                 # Create Serial Object with custom Methods (Custom)
 
-    def __init__(self, name, baud):
+    def __init__(self, name, port, baud):
         self.connected = False
+        self.__name__ = name
         try:
-            self.serial = serial.Serial(name, baud)
+            self.serial = serial.Serial(port, baud)
             self.connected = True
         except:
             None
@@ -173,12 +174,80 @@ class Create_Serial():                                                 # Create 
             logger.warning("Serial Communication Error")
             return "ERROR: Serial Communication Error"
 
+
+    def check_connection(self):
+        logger = logging.get_logger("check_connection()")                     # Create Logger object for this function
+        logger.debug("Checking connection for %s", self.__name__)
+
+        for a in Arduino_List:
+            if a[0] == self.__name__:
+                old_port = a[2]
+                serial_num = a[1]
+        
+                ports = serial.tools.list_ports.comports()
+                for p in ports:
+                    logger.debug("%s | %s", str(p), p.hwid)
+                    if f"SER={serial_num}" in p.hwid :
+                        a[2] = p.device
+                        exec(f'logger.debug("Port %s is %s ", p.device, a[0])')
+
+                if a[2] != old_port:
+                    if a[2] == "":
+                        self.connected = False
+                        logger.warning("%s has disconnected", self.__name__)
+                    else:
+                        logger.info("The port for %s has updated/changed", self.__name__)
+                        logger.info("Connecting to %s", self.__name__)
+
+                        logger.debug("--- creating %s", self.__name__)
+                        self.__init__
+
+                        logger.debug("--- starting %s", self.__name__)
+                        exec (f"Start_Serial(self)")
+
+
+    def reconnect(self):
+        logger = logging.get_logger("reconnect()--------")
+        logger.debug("Running reconnect attempt for %s", self.__name__)
+        try:
+            if  self.serial.is_open == True:
+                self.serial.close()
+        except:
+            logger.debug("Arduino is not connected")
+            return False
+        
+        try:
+            ports = list(serial.tools.list_ports.comports())
+            for p in ports:
+                for a in Arduino_List:
+                    if a[0] == self.__name__:
+                        if ("SER:"+a[1]) in p.hwid:
+                            if a[2] != p.device:
+                                a[2] = p.device
+                                logger.warning("Port location for %s has been changed to %s", a[0], a[2])
+            i = 0
+            for a in Arduino_List:
+                if Arduino_List[i][2] != "" and Arduino_List[i][0] == self.__name__:
+                    self.serial = serial.Serial(a[2], global_baud_rate)
+                    Start_Serial(self)
+                    logger.debug("Re-connect Successful")
+                    return True
+                i += 1
+            logger.warning("Re-connect Failed")
+            return False
+
+        except:
+            raise
+            logger.warning("Re-connect Failed")
+            return False
+
 ###################################################################
-class start_serial_connections():
+class initialize_serial_connections():
 
 
     def __init__(self, baud_rate=global_baud_rate):
-        
+        logger = logging.get_logger("start_serial_connections()")
+
         global global_baud_rate
         global standard_sleep_time
 
@@ -186,13 +255,13 @@ class start_serial_connections():
             global_baud_rate = baud_rate
             standard_sleep_time = 0.022 * (9600/global_baud_rate)
         
-        logger = logging.get_logger("start_serial_connections()")
         Match_Arduinos()                                                # Locate Arduinos based on Serial Number
+
         i = 0
         logger.info("--- Creating Serial Objects ---")
         for a in Arduino_List:
             logger.debug("--- creating %s", a[0])
-            exec (f"self.{a[0]} = Create_Serial('{a[2]}', {baud_rate})")   # Create Serial Objects for each Arduino in the list    
+            exec (f"self.{a[0]} = Create_Serial('{a[0]}','{a[2]}', {baud_rate})")   # Create Serial Objects for each Arduino in the list    
             i += 1
         logger.info("--- Starting Serial objects ---")
         i = 0
@@ -203,48 +272,6 @@ class start_serial_connections():
             i += 1
 
 
-    def reconnect_all(self):
-        logger = logging.get_logger("reconnect_all()")
-        logger.warning("Reconnecting all Arduinos")
-        self.__init__()
-
-
-    def reconnect(self, arduino_name):
-        logger = logging.get_logger("reconnect()--------")
-        logger.warning("Running reconnect attempt for %s", arduino_name)
-        try:
-            if  eval(f"self.{arduino_name}.serial.is_open") == True:
-                exec(f"self.{arduino_name}.serial.close()")
-        except:
-            logger.warning("%s is not connected", arduino_name)
-            return False
-        
-        try:
-            ports = list(serial.tools.list_ports.comports())
-            for p in ports:
-                for a in Arduino_List:
-                    if a[0] == arduino_name:
-                        if ("SER:"+a[1]) in p.hwid:
-                            if a[2] != p.device:
-                                a[2] = p.device
-                                logger.warning("Port location for %s has been changed to %s", a[0], a[2])
-
-            i = 0
-            for a in Arduino_List:
-                if Arduino_List[i][2] != "" and Arduino_List[i][0] == arduino_name:
-                    exec (f"self.{a[0]} = Create_Serial('{a[2]}', 9600)")
-                    exec (f"Start_Serial(self.{a[0]})")
-                    logger.warning("Re-connect Successful")
-                    return True
-                i += 1
-            logger.warning("Re-connect Failed")
-            return False
-
-        except:
-            logger.warning("Re-connect Failed")
-            return False
-
-    
     def check_connections(self):
         logger = logging.get_logger("check_connections()")                     # Create Logger object for this function
         logger.debug("##### Checking Serial Ports #####")
@@ -271,10 +298,8 @@ class start_serial_connections():
                     logger.info("The port for %s has updated/changed", Arduino_List[i][0])
                     logger.info("Connecting to %s", Arduino_List[i][0])
 
-                    time.sleep(0.05)
-
                     logger.debug("--- creating %s", Arduino_List[i][0])
-                    exec (f"self.{Arduino_List[i][0]} = Create_Serial('{Arduino_List[i][2]}', {global_baud_rate})")   # Create Serial Objects for each Arduino in the list
+                    exec (f"self.{Arduino_List[i][0]} = Create_Serial({Arduino_List[i][0]},'{Arduino_List[i][2]}', {global_baud_rate})")   # Create Serial Objects for each Arduino in the list
 
                     logger.debug("--- starting %s", Arduino_List[i][0])
                     exec (f"Start_Serial(self.{Arduino_List[i][0]})")                     # Start Each Serial Interface
@@ -290,7 +315,16 @@ class start_serial_connections():
                         logger.debug("Arduino \"%s\" is communicating properly", Arduino_List[i][0])
                 except:
                     logger.debug("Arduino \"%s\" was not connected",Arduino_List[i][0])
+
+
+    def reconnect_all(self):
+        logger = logging.get_logger("reconnect_all()")                     # Create Logger object for this function
+        logger.debug("Reconnecting all Arduinos")
+        for a in Arduino_List:
+            exec(f"self.{a[0]}.reconnect()")
+
+
 ###################################################################
 
-#if __name__ == '__main__':
-#    match_Arduinos()
+if __name__ == '__main__':
+    list_available_ports()

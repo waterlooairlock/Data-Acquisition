@@ -7,7 +7,7 @@ The get_data function will deal with getting data from the sensor/s attached to 
 The parse_command function will deal with calling functions created 
 */
 
-const int baud_rate = 9600;
+const int baud_rate = 28800;
 const float pause = .022 * (9600/baud_rate);
 
 //---------------------------------------------------------------------------------------------------------------------------------
