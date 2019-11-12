@@ -8,8 +8,8 @@
 # 
 
 import time                                                             # Needed for pauses in testing
-import LoggingSetup as logging
-import ArduinoSetup as Arduino                                          # API Library for WatLock Arduino Commands
+import LoggingSetup as logging #noqa
+import ArduinoSetup as Arduino #noqa
 
 logger = logging.get_logger("MASTER----------------")
 

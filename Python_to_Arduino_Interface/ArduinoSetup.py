@@ -5,7 +5,7 @@
 
 
 import time
-import LoggingSetup as logging
+import LoggingSetup as logging  #noqa
 import serial
 import serial.tools.list_ports
 
