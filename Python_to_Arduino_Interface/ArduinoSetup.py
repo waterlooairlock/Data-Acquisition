@@ -15,8 +15,11 @@ logger = logging.get_logger("Arduino Setup")
 
 max_wait_time = .05
 global_baud_rate = 9600
-standard_sleep_time = 0.022 * (9600/global_baud_rate)
 
+data_bit = b'0'
+command_bit = b'1'
+test_bit = b'2'
+unique_id_bit = b'#'
 test_command_reply = "Test Command Reply"
 
 ###################################################################
@@ -30,8 +33,7 @@ def Match_Arduinos(Arduinos, output_log_level = "info"):
             verified = False
             for a in Arduino_List:
                 if a[2] == p.device and eval(f"Arduinos.{a[0]}.connected"):
-                    exec(f"Arduinos.{a[0]}.serial.write(b'#')")
-                    time.sleep(standard_sleep_time)
+                    exec(f"Arduinos.{a[0]}.serial.write(unique_id_bit)")
                     serial_return = eval(f"Arduinos.{a[0]}.serial.readline")
                     if serial_return == a[1]:
                         logger.debug("Port %s already defined for %s", p.device, )
@@ -42,9 +44,9 @@ def Match_Arduinos(Arduinos, output_log_level = "info"):
             if not verified:
                 _serial = serial.Serial(p.device, global_baud_rate)
                 Start_Serial(_serial)
-                _serial.write(b'#')
+                _serial.write(unique_id_bit)
                 paired = False
-                for i in range(0,50):
+                for i in range(50):
                     serial_return = str(_serial.readline())
                     logger.debug("Reported ID is: %s", str(serial_return)[2:-5])
                     if ("UniqueID: " in serial_return[2:-5]):
@@ -57,7 +59,7 @@ def Match_Arduinos(Arduinos, output_log_level = "info"):
                                 break
                     if paired:
                         break
-                    _serial.write(b'#')
+                    _serial.write(unique_id_bit)
 
     exec(f'logger.{output_log_level}("------Matches Made------")')                            # Log formatting text
     for a in Arduino_List:
@@ -79,15 +81,15 @@ def Start_Serial(port):                                             # Start-Up a
     time.sleep(0.022)                                               # Pause (VERY IMPORTANT)
     port.dtr = True                                                 # Force re-enable the Port (Forcing the port to restart allows us to not reboot the arduino every time we re-connect)
 
-    port.write(b'0')                                                # Send initial bit to force the serial port on MKR1000 to start
+    port.write(data_bit)                                                # Send initial bit to force the serial port on MKR1000 to start
 
     
-    for i in range(0,50):
+    for i in range(50):
         serial = port.readline()                                    # Continue to read the output of the Serial Port,
         logger.debug("Reply from serial port: %s", str(serial)[2:-5])
         if (str(serial)[2:-5] == "Serial Connection is Ready" or str(serial)[2:-5] == test_command_reply):        # Until the Arduino says it is ready to Communicate
             return True                                                   # At which point, Stop reading the Serial Port
-        port.write(b'2')
+        port.write(test_bit)
     
     logger.warning("Arduino did not reply properly")
     return False
@@ -121,7 +123,7 @@ class Create_Serial():                                                 # Create 
 
         try:    
             logger.debug("Writing   \"0\"  to Arduino")
-            self.serial.write(b'0')                                                        # Write a '0' bit to the Arduino to say "Send me data"
+            self.serial.write(data_bit)                                                        # Write a '0' bit to the Arduino to say "Send me data"
             start_time = time.time()                                                # Set timer for wait amount
             while(True):            
                 if(self.serial.inWaiting()>0):                                             # Wait for Arduino to post to Serial Port
@@ -155,8 +157,7 @@ class Create_Serial():                                                 # Create 
         command_string = command + "~"
         try:
             logger.debug("Sending   \"1\"  to arduino")
-            self.serial.write(b'1')                                            # Write a '1' bit to tell the Arduino "I want to send a Command"
-            time.sleep(standard_sleep_time)           
+            self.serial.write(command_bit)                                            # Write a '1' bit to tell the Arduino "I want to send a Command"
             if(self.serial.inWaiting()>0):                                     # Wait for Arduino to post to serial
                 verification = self.serial.readline()                          # Read the Serial line 
                 if (str(verification).find("OK")):                      # Check that "OK" verification is in the String reply from Arduino.
@@ -221,16 +222,14 @@ class Create_Serial():                                                 # Create 
         logger = logging.get_logger("check_connection()")                     # Create Logger object for this function
         logger.debug("Checking connection for %s", self.__name__)
 
-        reply = self.check_if_connected()
-        if reply != True:
+        if (reply := self.check_if_connected()) != True:
             logger.debug("Arduino is not Connected")
             return False
 
         try:
-            self.serial.write(b'2')
-            serial_reply = self.serial.readline()
-            if str(serial_reply)[2:-5] == test_command_reply:
-                self.serial.write(b'#')
+            self.serial.write(test_bit)
+            if str(self.serial.readline())[2:-5] == test_command_reply:
+                self.serial.write(unique_id_bit)
                 for a in Arduino_List:
                     if a[0] == self.__name__:
                         if a[1] in str(self.serial.readline()):
@@ -263,7 +262,7 @@ class Create_Serial():                                                 # Create 
     def reconnect(self):
         logger = logging.get_logger("reconnect()--------")
         logger.debug("Running reconnect attempt for %s", self.__name__)
-        if self.connected == True:
+        if self.connected:
             try:
                 if  self.serial.is_open == True:
                     self.serial.close()
@@ -287,21 +286,19 @@ class Create_Serial():                                                 # Create 
                         if a[0] == self.__name__ and not paired:
                             _serial = serial.Serial(p.device,global_baud_rate)
                             Start_Serial(_serial)
-                            _serial.write(b'#')
+                            _serial.write(unique_id_bit)
                             if  a[1] in str(_serial.readline()):
                                 a[2] = p.device
                                 found = True
                             _serial.close()
 
-            i = 0 
-            for a in Arduino_List:
+            for i, a in enumerate(Arduino_List):
                 if Arduino_List[i][2] != "" and Arduino_List[i][0] == self.__name__:
                     self.serial = serial.Serial(a[2], global_baud_rate)
                     Start_Serial(self.serial)
                     self.connected = True
                     logger.debug("Re-connect Successful")
                     return True
-                i += 1
             logger.warning("%s Re-connect Failed", self.__name__)
             return False
 
@@ -317,23 +314,21 @@ class initialize_serial_connections():
         logger = logging.get_logger("start_serial_connections()")
 
         global global_baud_rate
-        global standard_sleep_time
 
         if baud_rate is not global_baud_rate:
             global_baud_rate = baud_rate
-            standard_sleep_time = 0.022 * (9600/global_baud_rate)
         
         Match_Arduinos(self)                                                # Locate Arduinos based on Serial Number
 
-        i = 0
         logger.info("--- Creating Serial Objects ---")
-        for a in Arduino_List:
+        
+        for i, a in enumerate(Arduino_List):
             logger.debug("--- creating %s", a[0])
             exec (f"self.{a[0]} = Create_Serial('{a[0]}','{a[2]}', {baud_rate})")   # Create Serial Objects for each Arduino in the list    
-            i += 1
+
         logger.info("--- Starting Serial objects ---")
-        i = 0
-        for a in Arduino_List:
+
+        for i, a in enumerate(Arduino_List):
             if Arduino_List[i][2] != "":                                # if Match_Arduino found the arduino
                 logger.debug("--- starting %s", a[0])
                 exec (f"Start_Serial(self.{a[0]}.serial)")                     # Start Each Serial Interface
@@ -368,7 +363,7 @@ def list_available_ports():                                         # A setup to
         if "Arduino" in str(p):
             _serial = serial.Serial(p.device, global_baud_rate)
             Start_Serial(_serial)
-            _serial.write(b'#')
+            _serial.write(unique_id_bit)
             serial_return = str(_serial.readline())
             #print (str(p) + " | " + serial_return[2:-5] + " | " + p.hwid)
             logger.info("%s | %s | %s", str(p), serial_return[2:-5], p.hwid)
