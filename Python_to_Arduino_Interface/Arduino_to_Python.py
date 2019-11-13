@@ -11,7 +11,7 @@ import time                                                             # Needed
 import LoggingSetup as logging #noqa
 import ArduinoSetup as Arduino #noqa
 
-logger = logging.get_lpyhtonogger("MASTER----------------")
+logger = logging.get_logger("MASTER----------------")
 
 # LIST OF ARDUINOS
 #Arduino.Arduino_List.append(["SERIAL_PORT_NAME"    , "SERIAL_#_OF_ARDUINO"                                         , ""])
