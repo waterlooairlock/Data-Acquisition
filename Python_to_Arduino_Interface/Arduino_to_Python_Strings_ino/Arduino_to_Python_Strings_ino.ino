@@ -56,7 +56,6 @@ void specific_setup(){
   digitalWrite(LED_BUILTIN, LOW);
 }
 
-
 //#################################################################################################################################
 
 
@@ -68,8 +67,6 @@ void specific_setup(){
 //MAIN PARSING FUNCTIONS
 
 void constant_checks(){
-
-
                                                                                 /*
                                                                                 Stuff that needs to run constantly...
 
@@ -115,7 +112,6 @@ void parse_command(String command){
     command_return.toCharArray(command_return_array, command_return_size+1);    //Convert Text Reply String into Character Array and store Globally
 }
 
-
 //#################################################################################################################################
 
 
@@ -136,55 +132,52 @@ void loop() {
   constant_checks();
 
   if (Serial.available() > 0)                           //Check of there is something in the Serial port to be read  
-  {  
-       int inByte = Serial.read();                      //This variable stores the low level Byte command sent from python
-       
-       //------------------------------------------
-       //Command from Python to sent senor data
-       
-       if (inByte == '0'){
-         get_data();
-         Serial.println(data_array);                    //String to send back to Python Script (replace with data string)
-       }
-       //------------------------------------------
+  { 
+    int inByte = Serial.read();                      //This variable stores the low level Byte command sent from python
+    
+    //------------------------------------------
+    //Command from Python to sent senor data
+    if (inByte == '0'){
+      get_data();
+      Serial.println(data_array);                    //String to send back to Python Script (replace with data string)
+    }
+    //------------------------------------------
 
 
 
-       //------------------------------------------
-       // Command from python to get ready to receive a String Command
+    //------------------------------------------
+    // Command from python to get ready to receive a String Command
+    if (inByte == '1'){
+      char CommandSent[Command_Limit+1];            //Reads up to Command_Limit, change to adjust limit (larger requires more ram)
+      int i = 0;                                    //Set string iterator  
+      Serial.println("OK");                         //Reply "OK" to Python to confirm command
+      
+      delay(pause);                                 //Necessary Pause
 
-       if (inByte == '1'){
-          char CommandSent[Command_Limit+1];            //Reads up to Command_Limit, change to adjust limit (larger requires more ram)
-          int i = 0;                                    //Set string iterator  
-          Serial.println("OK");                         //Reply "OK" to Python to confirm command
-          
-          delay(pause);                                 //Necessary Pause
-
-          parse_command(Serial.readStringUntil('~'));                       //Call the parse_command() function
-          Serial.println(command_return_array);         //Send reply string back to Python
-       }
-       //------------------------------------------
-
-
-
-       //------------------------------------------
-       //Extra command for example purposes
-       
-       if (inByte == '2'){
-         char return_array[] = "Test Command Reply";
-         Serial.println(return_array);          //String to send back to Python Script (replace with data string)
-       }
-       //------------------------------------------
+      parse_command(Serial.readStringUntil('~'));                       //Call the parse_command() function
+      Serial.println(command_return_array);         //Send reply string back to Python
+    }
+    //------------------------------------------
 
 
 
-       //------------------------------------------
-       // Output the processor serial #
-       if (inByte == '#'){
-         UniqueIDdump(Serial);
-       }
-       //------------------------------------------
-  }  
-  
+    //------------------------------------------
+    //Extra command for example purposes
+    if (inByte == '2'){
+      char return_array[] = "Test Command Reply";
+      Serial.println(return_array);          //String to send back to Python Script (replace with data string)
+    }
+    //------------------------------------------
+
+
+
+    //------------------------------------------
+    // Output the processor serial #
+    if (inByte == '#'){
+      UniqueIDdump(Serial);
+    }
+    //------------------------------------------
+  }
 }  
+
 //#################################################################################################################################
