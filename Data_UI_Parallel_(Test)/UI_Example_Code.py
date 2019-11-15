@@ -6,13 +6,14 @@ logger = logging.get_logger("UI_MASTER----------------")
 def master(pipe):
     while(True):
         try:
-            pipe.send("Test")
-            text = pipe.recv()
-            print(text)
-            logger.error("Received: %s",text)
+            if pipe.poll():
+                text = pipe.recv()
+                pipe.send("Reconnect Sensors")
+                print(text)
+                logger.error("Received: %s",text)
         except:
             None
-        time.sleep(1)
+        time.sleep(3)
 
 if __name__ == "__main__":
     master(None)

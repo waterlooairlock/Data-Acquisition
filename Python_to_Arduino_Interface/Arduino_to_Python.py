@@ -36,7 +36,7 @@ while (True):
     print(Arduinos.Testduino.send_command("Test Command"))  
 
 
-
+    
     # Data request Command
     print(Arduinos.Arduinot.get_data())
     
@@ -46,7 +46,7 @@ while (True):
     
     
 
-
+    """    
     if not Arduinos.Testduino.check_connection():
         Arduinos.Testduino.reconnect()
 
@@ -56,7 +56,7 @@ while (True):
     #print(Arduinos.reconnect_all())
 
     print(Arduinos.check_all_connections())
-    
+    """
 
 
     print ("\n")

@@ -84,7 +84,7 @@ def Start_Serial(port):                                             # Start-Up a
 
     for i in range(50):
         serial = str(port.readline())[2:-5]                                    # Continue to read the output of the Serial Port,
-        logger.debug("Reply from serial port: %s", str(serial)[2:-5])
+        logger.debug("Reply from serial port: %s", str(serial))
         if (serial == "Serial Connection is Ready" or serial == test_command_reply):        # Until the Arduino says it is ready to Communicate
             return True                                                   # At which point, Stop reading the Serial Port
         port.write(test_bit)
@@ -157,6 +157,7 @@ class Create_Serial():                                                 # Create 
         try:
             logger.debug("Sending   \"1\"  to arduino")
             self.serial.write(command_bit)                                            # Write a '1' bit to tell the Arduino "I want to send a Command"
+            time.sleep(0.005)
             if(self.serial.inWaiting()>0):                                     # Wait for Arduino to post to serial
                 verification = self.serial.readline()                          # Read the Serial line 
                 if (str(verification).find("OK")):                      # Check that "OK" verification is in the String reply from Arduino.
@@ -165,12 +166,12 @@ class Create_Serial():                                                 # Create 
                     start_time = time.time()                            # Set timer for wait amount
                     while(time.time() < start_time + max_wait_time):
                         if(self.serial.inWaiting()>0):                         # Check if Arduino Wrote anything       
-                            data = str(self.serial.readline())                 # Read the Data Arduino Wrote
+                            data = str(self.serial.readline())[2:-5]                 # Read the Data Arduino Wrote
                             if "ERROR" in data:
-                                logger.warning("Reply from Arduino: %s", data[2:-5])
+                                logger.warning("Reply from Arduino: %s", data)
                             else:
-                                logger.debug("Reply from Arduino: %s", data[2:-5])
-                            return data[2:-5]
+                                logger.debug("Reply from Arduino: %s", data)
+                            return data
                     else:
                         logger.warning("TIMEOUT - Arduino did not reply in time")
                         return"ERROR: TIMEOUT"                    # Return "TIMEOUT" instead of the data (This allows the program to move on if an arduino has issues)
@@ -220,7 +221,7 @@ class Create_Serial():                                                 # Create 
     def check_connection(self):
         logger = logging.get_logger("check_connection()")                     # Create Logger object for this function
         logger.debug("Checking connection for %s", self.__name__)
-
+        
         reply = self.check_if_connected()
         if reply != True:
             logger.debug("Arduino is not Connected")
