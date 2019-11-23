@@ -22,10 +22,6 @@ char data_array[data_array_size + 1];                   //Character Array for Da
 const int command_return_size = 30;                     //Maximum size for Reply String From Command parsing
 char command_return_array[command_return_size + 1];     //Character Array for Command Parsing Reply
 
-const int force_return_size = 30;                       //Maximum size for Reply String From other function (to add new function calls, modify the ArduinoSetup and this code)
-char force_return_array[force_return_size + 1];         //Character Array for the Other Function Reply
-
-
 
 //---------------------------------------------------------------------------------------------------------------------------------
 // Arduino Specific Variables
@@ -127,11 +123,11 @@ void loop() {
 
   data_array[0] = '\0';                                    //Set first character of the Character arrays to the end-string character (functionally empties the string)
   command_return_array[0] = '\0';
-  force_return_array[0] = '\0';
 
   constant_checks();
 
   if (Serial.available() > 0)                           //Check of there is something in the Serial port to be read  
+
   { 
     int inByte = Serial.read();                      //This variable stores the low level Byte command sent from python
     
@@ -178,6 +174,7 @@ void loop() {
     }
     //------------------------------------------
   }
+  
 }  
 
 //#################################################################################################################################
