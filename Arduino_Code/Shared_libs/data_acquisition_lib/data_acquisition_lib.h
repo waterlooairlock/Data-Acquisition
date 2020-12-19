@@ -11,6 +11,17 @@
 
 #include <Wire.h>
 
+/**
+ * @brief Watlock Server Interface
+ * 
+ * This is the namespace for all the Watlock Server Interface
+ * functions.
+ * 
+ * Setup as a namespace with closed local variables.
+ * This could have been a class instead, but would have created
+ * complex function pointer garbage with the I2C function handling.
+ * 
+ */
 namespace Watlock_Interface{
     enum class message_type{
     none            = 0,

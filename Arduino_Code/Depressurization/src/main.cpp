@@ -1,15 +1,9 @@
 /**
- * Template Project for Control Arduinos in the WatLock Airlock
- * ────────────────────────────────────────────────────────────
- * This is the primary source file. Place all
- * needed code in this file. If there are multiple
- * large functions, additional source files can be #included.
- * 
- * If you need to add a library for sensor interfaces or
- * other things, place the libraries into the 'lib' directory.
- * 
- * Created on: 12/14/2020
- * Written by: Austin W. Milne (@awbmilne)
+ * @file main.cpp
+ * @author Austin W. Milne (austin.milne@uwaterloo.ca)
+ * @brief Primary source file for the Depressurization Arduino
+ * @version 0.1
+ * @date 2020-12-19
  */
 
 #include <arduino.h>
@@ -30,15 +24,27 @@ void setup(){
 
 void loop(){
     pressure_hold = sensor.getPressure(ADC_4096);
-    temperature_hold = sensor.getPressure(ADC_4096);
+    Serial.print("Pressure reading: "); Serial.println(pressure_hold);
+    temperature_hold = sensor.sensor.getTemperature(CELSIUS, ADC_512);
+    Serial.print("Temperature reading: "); Serial.println(temperature_hold);
 
     delay(1000); // Pause for 1 Second
 }
 
+/**
+ * @brief Sensor 1 Configured as Pressure Sensor
+ * 
+ * @return float The absolute pressure in Pascals
+ */
 float Watlock_Interface::get_sensor_1(){ // Overwrite the Sensor 1 function from Watlock_Interface
     return pressure_hold;
 }
 
-float Watlock_Interface::get_sensor_2(){
+/**
+ * @brief Sensor 2 Configured as Temperature sensor
+ * 
+ * @return float The temperature in units of Degrees Celsius
+ */
+float Watlock_Interface::get_sensor_2(){ // Overwrite the Sensor 2 function from Watlock_Interface
     return temperature_hold;
 }

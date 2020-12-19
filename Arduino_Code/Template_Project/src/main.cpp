@@ -1,15 +1,16 @@
 /**
- * Template Project for Control Arduinos in the WatLock Airlock
- * ────────────────────────────────────────────────────────────
- * This is the primary source file. Place all
- * needed code in this file. If there are multiple
- * large functions, additional source files can be #included.
+ * @file main.cpp
+ * @author Austin W. Milne (@Awbmilne)
+ * @brief Template Source file for Python controlled Arduino
+ * @version 0.1
+ * @date 2020-12-19
  * 
- * If you need to add a library for sensor interfaces or
- * other things, place the libraries into the 'lib' directory.
+ * @copyright Copyright (c) 2020
  * 
- * Created on: 12/14/2020
- * Written by: Austin W. Milne (@awbmilne)
+ * This is the primary source file for the Arduino's firmware.
+ * This template source shows the use of the `data_acquisition_lib`.
+ * Specifically, how to setup the interface and configure sensor and
+ * command handling.
  */
 
 #include <arduino.h>
@@ -24,11 +25,13 @@ void loop(){
     Serial.println("");
 }
 
+// Overwrite the Sensor 1 function
 float get_sensor_1(){
     float test_val = 1.2345;
     return test_val;
 }
 
+// Overwrite the command handing function
 void handle_command(uint8_t code, uint8_t length, uint8_t data[]){
     switch(code){
         case 1:
