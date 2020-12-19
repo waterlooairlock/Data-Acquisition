@@ -54,6 +54,7 @@ namespace Watlock_Interface{
             case message_type::read_sensor:
                 message[1] = (message[1] <= 5) ? message[1] : 0;
                 next_sensor = static_cast<sensor_list>(message[1]);
+                log_stream->print("Set next sensor to read: Sensor "); log_stream->println(message[1]);
                 break;
             default:
                 return;
