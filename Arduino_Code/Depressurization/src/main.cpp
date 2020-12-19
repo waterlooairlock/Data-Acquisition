@@ -19,7 +19,7 @@ void setup(){
     sensor.begin();
 
     Serial.begin(9600);
-    Watlock_Interface::setup_interface(Serial, 69);
+    Watlock_Interface::setup_interface(Serial, 11);
 }
 
 void loop(){

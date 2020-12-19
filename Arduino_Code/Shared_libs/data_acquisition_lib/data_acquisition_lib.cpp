@@ -13,7 +13,6 @@
 
 namespace Watlock_Interface{
     static Stream* log_stream = nullptr;
-    static sensor_list next_sensor = sensor_list::none;
 
     /**
      * @brief Set the up Server interface
@@ -53,26 +52,21 @@ namespace Watlock_Interface{
 
         // Read the message into an array
         uint8_t message[numBytes] = {0};
-        for (int i=0; i<numBytes && Wire.available(); i++){
+        for (int i=0; i<numBytes; i++){
             message[i] = Wire.read();
         }
 
-        // Limit the range to the enum size
-        message[0] = (message[0] <= 2) ? message[0] : 0;
+        // Limit the range to the enumerator size
+        message[0] = (message[0] <= 1) ? message[0] : 0;
 
         // Cast to enum and handle cases
         switch( static_cast<message_type>(message[0]) ){
             // Call Command Function
             case message_type::command:
-                log_stream->print("Calling command function: Code "); log_stream->println(message[0]);
-                handle_command(message[0], sizeof(message)-1, message+1);
+                log_stream->print("Calling command function: Code "); log_stream->println(message[1]);
+                handle_command(message[1], sizeof(message)-2, message+2);
                 break;
-            // Set next_sensor for data request
-            case message_type::read_sensor:
-                message[1] = (message[1] <= 5) ? message[1] : 0;
-                next_sensor = static_cast<sensor_list>(message[1]);
-                log_stream->print("Set next sensor to read: Sensor "); log_stream->println(message[1]);
-                break;
+            // Could have additional cases here for something other than commands to be sent over I2C
             default:
                 return;
         }
@@ -87,6 +81,12 @@ namespace Watlock_Interface{
      * Only used internally, DO NOT USE
      */
     void handle_request(){
+        // Read the first Byte as the Sensor Number and cast to Enumerator
+        uint8_t sensor_num = Wire.read();
+        sensor_num = (sensor_num <= 5) ? sensor_num : 0;
+        sensor_list next_sensor = static_cast<sensor_list>(sensor_num);
+
+        // Get the sensor reading
         float output = 0;
         switch(next_sensor){
             case sensor_list::_1:
@@ -102,7 +102,12 @@ namespace Watlock_Interface{
             default:
                 output = 0;
         }
+        
+        // Send the data over I2C
         Wire.write((uint8_t*)&output, sizeof(output));
+
+        // Log Information
+        log_stream.print("Send sensor data: Value = "); log_stream.println(output, 6);
     }
 
     /**

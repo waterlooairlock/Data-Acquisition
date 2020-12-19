@@ -25,8 +25,7 @@
 namespace Watlock_Interface{
     enum class message_type{
     none            = 0,
-    read_sensor     = 1,
-    command         = 2,
+    command         = 1,
     };
 
     enum class sensor_list{
