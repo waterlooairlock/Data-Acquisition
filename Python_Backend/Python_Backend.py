@@ -3,7 +3,7 @@
 from config import *
 from data_collection import data_collection
 
-logger = logging.get_logger("Process Handler")
+logger = logging.get_logger("Thread Handler")
 
 if __name__ =="__main__":
     # Create list of threads
