@@ -1,7 +1,9 @@
-*.vscode*
+**/.vscode/*
 *.code-workspace
 *desktop.ini
 
 **/__pycache__/**
 **/.pio/**
 **/*.log
+
+!**/launch.json
