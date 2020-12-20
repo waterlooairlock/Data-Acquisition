@@ -7,7 +7,7 @@ def get_logger(name):
         log_format = '%(asctime)s  %(name)30s : [%(levelname)s] > %(message)-65s [%(filename)-20s | ln:%(lineno)d]'
         logging.basicConfig(level=logging.DEBUG,        # NOTE: Change Log Level for RunLog.log File
                             format=log_format,
-                            filename=' RunLog.log',
+                            filename='Airlock_Backend_RunLog.log',
                             filemode='w')
         console = logging.StreamHandler()
         console.setLevel(logging.INFO)                  # NOTE: Change Log Level for Terminal

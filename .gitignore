@@ -1,7 +1,7 @@
-## CUSTOM GIT IGNORE PARAMETERS
 *.vscode*
 *.code-workspace
-desktop.ini
+*desktop.ini
 
 **/__pycache__/**
 **/.pio/**
+**/*.log
