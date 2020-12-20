@@ -1,25 +1,29 @@
+"""
+This is the shared configuration for the various unit files
+of this Python project.
+"""
 
+# Built in
+import os
+import time
+import datetime
+
+# Generic
 import threading
+import multitimer
 import mysql.connector
 
+# Modules and Packages
 import Custom_Logging as logging
-from Watlock_Interface import arduino_interface
-
-logger = logging.get_logger("Process Handler")
+from arduino_interface import *
 
 arduinos = arduino_interface(1)
 thread_lock = threading.Lock()
 threads = []
-db = mysql.connector.connect(
-    host="localhost",
-    user="sql_user",
-    password="sql_password",
-    database="airlock"
-)
-
-if (db):
-    logger.debug("Database Connection Succeded")
-    db.autocommit(True)
-else:
-    logger.error("Database Connection Failed!")
+database_config = {
+    'host':'localhost',
+    'user':'watlock_user',
+    'password':'elon_gated_musk_rat',
+    'database':'watlock'
+}
 
