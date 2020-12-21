@@ -9,12 +9,12 @@ class data_collection(threading.Thread):
         self.logger = logging.get_logger("Data Collection")
         self.logger.info("Configuring sensor readings table")
         # Connect to database and verify connection
-        db = mysql.connector.connect(**database_config)
-        if (db):
+        try:
+            db = mysql.connector.connect(**database_config)
             self.logger.info("Database Connection Succeded")
-        else:
+        except:
             self.logger.error("Database Connection Failed!")
-            os._exit() # ABORT
+            os._exit(1) # ABORT
         # Configure connection and write Database Scheme
         db.autocommit = True
         cursor = db.cursor()

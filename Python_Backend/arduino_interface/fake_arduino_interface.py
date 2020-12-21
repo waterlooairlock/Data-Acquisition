@@ -1,11 +1,10 @@
 
 import time
-
 import random
 import logging
 from custom_logging import log_path, get_logger
 
-random.seed("WatLock")
+random.seed("WatLock") # Seed random number generator. Use constant seed so the values are always the same
 
 class interface:
     def __init__(self):

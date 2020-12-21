@@ -4,7 +4,6 @@ of this Python project.
 """
 
 # Built in
-from arduino_interface import fake_arduino_interface
 import os
 import time
 import datetime
@@ -15,7 +14,7 @@ import threading
 import multitimer
 import mysql.connector
 
-# Modules and Packages
+# Modules and Packages 
 import arduino_interface
 import custom_logging as logging
 
@@ -29,9 +28,9 @@ use_i2c = not vars(args)["no_i2c"]
 
 # Use 
 if use_i2c:
-    arduinos = arduino_interface.interface(1)
+    arduinos = arduino_interface.arduino_interface.interface(1)
 else:
-    arduinos = fake_arduino_interface.interface()
+    arduinos = arduino_interface.fake_arduino_interface.interface()
 
 thread_lock = threading.Lock()
 threads = []
