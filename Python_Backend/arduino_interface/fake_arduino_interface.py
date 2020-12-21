@@ -21,12 +21,12 @@ class interface:
 
     def get_sensor_reading(self, arduino_ID: int, sensor_number: int):
         # Generate Random float value
-        value = random.uniform(0, 10)
+        value = round(random.uniform(0, 10),6)
         # Log Request
-        self.logger.info("Data request: {arduino_ID:%s, sensor_number:%s}, returned value {%s}", arduino_ID, sensor_number, value)
+        self.logger.debug("Data request: {arduino_ID:%s, sensor_number:%s}, returned value {%s}", arduino_ID, sensor_number, value)
         return value
 
     def send_command(self, arduino_ID: int, command_code: int, extra_data: bytearray):
         # Log Command
-        self.logger.info("Command: {arduino_ID:%s, command_code:%s, extra_data:%s", arduino_ID, command_code, extra_data)
+        self.logger.debug("Command: {arduino_ID:%s, command_code:%s, extra_data:%s", arduino_ID, command_code, extra_data)
         return
