@@ -2,6 +2,15 @@
 import time
 import logging
 
+# This sets up a logging object to use across the Python Backend.
+# Just include this unit and then use:
+
+# logger.error("message")
+# logger.warning("message")
+# logger.info("message")
+
+# for the various levels of warning in the log file.
+
 log_path = "logs/"
 def get_logger(name):
     if not logging.getLogger(name).handlers:

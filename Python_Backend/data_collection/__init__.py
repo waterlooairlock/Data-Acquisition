@@ -18,7 +18,7 @@ class data_collection(threading.Thread):
         # Configure connection and write Database Scheme
         db.autocommit = True
         cursor = db.cursor()
-        cursor.execute(open("./db_schema/schema.sql", "r").read()) # Run Database Schema to Create it
+        cursor.execute(open("./db_schema/schema.sql", "r").read(), multi=True) # Run Database Schema to Create it
         cursor.close() # Close
     
     def upload_sensor_data(self, readings):

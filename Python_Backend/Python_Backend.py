@@ -10,8 +10,8 @@ main_logger = logging.get_logger("Thread Handler")
 if __name__ =="__main__":
     # Create list of threads
     threads = [
-        data_collection("Data_Collection"),             # Data Collection Thread
-        threading.Thread(target=command_handler.run, kwargs=dict(host="127.0.0.1",port=8080)),   # Command Handler API Thread
+        data_collection("Data_Collection"),                                                      # Data Collection Thread
+        threading.Thread(name="Flask API", target=command_handler.run, kwargs=dict(host="127.0.0.1",port=8080)),   # Command Handler API Thread
     ]
     # Start all the threads
     for thread in threads:
