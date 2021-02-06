@@ -20,13 +20,17 @@ from command_handler import *
 #
 # IT WOULD BE WISE TO COPY THIS EXACT FUNCTION AND MODIFY IT
 # AS NEEDED FOR OTHER ARDUINOS.
+
+
 @command_handler.route("/arduinos/depressurization")
 def depressurization_command():
     if 'command' not in request.args:
-        api_logger.warning("Depressurization command called without 'command' declared: Aborted")
+        api_logger.warning(
+            "Depressurization command called without 'command' declared: Aborted")
         return
     if 'value' not in request.args:
-        api_logger.warning("Depressurization command called without 'value' declared: Aborted")
+        api_logger.warning(
+            "Depressurization command called without 'value' declared: Aborted")
         return
     # Read arguements into variables
     value = request.args['value']
@@ -36,19 +40,27 @@ def depressurization_command():
 
     # Handle each command
     if command == "pump_control":
-        command_code = 1 # This is the command code that will be sent to the arduino, will be handled by the `handle_command()` function
-        if value == "stop":  extra_data = [0x01] # This is extra data that will be send to the arduino
-        if value == "start": extra_data = [0x02]
+        command_code = 1  # This is the command code that will be sent to the arduino, will be handled by the `handle_command()` function
+        if value == "stop":
+            # This is extra data that will be send to the arduino
+            extra_data = [0x01]
+        if value == "start":
+            extra_data = [0x02]
     elif command == "valve_control":
-        command_code = 2 # Ditto
-        if value == "close": extra_data = [0x01] # Ditto
-        if value == "open":  extra_data = [0x02]
-    
+        command_code = 2  # Ditto
+        if value == "close":
+            extra_data = [0x01]  # Ditto
+        if value == "open":
+            extra_data = [0x02]
+
     # Send message or log failure
     if command_code != 0
-        arduinos.send_command(11, command_code, bytearray(extra_data))
+    arduinos.send_command(11, command_code, bytearray(extra_data))
     else:
-        api_logger.warning("Depressurization command called with unknown parameters: command='%s', value='%s': Aborted", command, value)
+        api_logger.warning(
+            "Depressurization command called with unknown parameters: command='%s', value='%s': Aborted",
+            command,
+            value)
         print(command)
         print(value)
     return 'okay'

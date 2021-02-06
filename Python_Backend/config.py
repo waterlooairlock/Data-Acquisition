@@ -14,7 +14,7 @@ import threading
 import multitimer
 import mysql.connector
 
-# Modules and Packages 
+# Modules and Packages
 import arduino_interface
 import custom_logging as logging
 
@@ -36,9 +36,8 @@ else:
 thread_lock = threading.Lock()
 threads = []
 database_config = {
-    'host':'localhost',
-    'user':'watlock_user',
-    'password':'elon_gated_musk_rat',
-    'database':'watlock'
+    'host': 'localhost',
+    'user': 'watlock_user',
+    'password': 'elon_gated_musk_rat',
+    'database': 'watlock'
 }
-

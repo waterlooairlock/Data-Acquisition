@@ -12,6 +12,8 @@ import logging
 # for the various levels of warning in the log file.
 
 log_path = "logs/"
+
+
 def get_logger(name):
     if not logging.getLogger(name).handlers:
         log_format = '%(asctime)s  %(name)18s : %(levelname)7s > %(message)-80s [%(filename)-21s | ln:%(lineno)d]'
@@ -20,10 +22,12 @@ def get_logger(name):
                             filename=log_path + 'Backend_RunLog.log',
                             filemode='w')
         console = logging.StreamHandler()
-        console.setLevel(logging.INFO)                  # NOTE: Change Log Level for Terminal
+        # NOTE: Change Log Level for Terminal
+        console.setLevel(logging.INFO)
         console.setFormatter(logging.Formatter(log_format))
         logging.getLogger(name).addHandler(console)
     return logging.getLogger(name)
+
 
 logger = get_logger("Setup")
 logger.info("PROGRAM START: Time: " + str(time.localtime()))
