@@ -16,7 +16,7 @@ import mysql.connector
 
 # Modules and Packages
 
-import arduino_interface 
+import arduino_interface
 import Custom_Logging as logging
 
 # Configure Arguement parser
