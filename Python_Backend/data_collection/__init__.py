@@ -1,5 +1,7 @@
 
 from config import *
+from config import database_config
+import mysql
 
 
 class data_collection(threading.Thread):
@@ -16,6 +18,7 @@ class data_collection(threading.Thread):
         except BaseException:
             self.logger.error("Database Connection Failed!")
             os._exit(1)  # ABORT
+
         # Configure connection and write Database Scheme
         db.autocommit = True
         cursor = db.cursor()

@@ -54,8 +54,8 @@ def depressurization_command():
             extra_data = [0x02]
 
     # Send message or log failure
-    if command_code != 0
-    arduinos.send_command(11, command_code, bytearray(extra_data))
+    if command_code != 0:
+        arduinos.send_command(11, command_code, bytearray(extra_data))
     else:
         api_logger.warning(
             "Depressurization command called with unknown parameters: command='%s', value='%s': Aborted",

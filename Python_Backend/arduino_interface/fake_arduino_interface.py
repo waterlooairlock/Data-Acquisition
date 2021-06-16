@@ -2,7 +2,7 @@
 import time
 import random
 import logging
-from custom_logging import log_path, get_logger
+from Custom_Logging import log_path, get_logger
 
 # Use constant seed so the random values are always the same
 random.seed("WatLock")  # Seed random number generator.

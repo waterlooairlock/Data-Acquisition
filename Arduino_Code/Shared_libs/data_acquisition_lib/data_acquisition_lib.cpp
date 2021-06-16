@@ -107,7 +107,7 @@ namespace Watlock_Interface{
         Wire.write((uint8_t*)&output, sizeof(output));
 
         // Log Information
-        log_stream.print("Send sensor data: Value = "); log_stream.println(output, 6);
+        log_stream->print("Send sensor data: Value = "); log_stream->println(output, 6);
     }
 
     /**

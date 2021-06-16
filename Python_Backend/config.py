@@ -15,8 +15,9 @@ import multitimer
 import mysql.connector
 
 # Modules and Packages
-import arduino_interface
-import custom_logging as logging
+
+import arduino_interface 
+import Custom_Logging as logging
 
 # Configure Arguement parser
 arg_parser = argparse.ArgumentParser()
@@ -28,16 +29,16 @@ use_i2c = not vars(args)["no_i2c"]
 
 # Determine if Real Arduinos or the fake interface should be used.
 if use_i2c:
-    arduinos = arduino_interface.arduino_interface.interface(1)
+    arduinos = arduino_interface.arduino_interface
 else:
-    arduinos = arduino_interface.fake_arduino_interface.interface()
+    arduinos = arduino_interface.fake_arduino_interface
 
 # Global variables
 thread_lock = threading.Lock()
 threads = []
 database_config = {
     'host': 'localhost',
-    'user': 'watlock_user',
-    'password': 'elon_gated_musk_rat',
+    'user': 'root',
+    'password': 'root',
     'database': 'watlock'
 }
