@@ -38,7 +38,7 @@ thread_lock = threading.Lock()
 threads = []
 database_config = {
     'host': 'localhost',
-    'user': 'root',
-    'password': 'root',
+    'user': 'watlock_user',
+    'password': 'elon_gated_musk_rat',
     'database': 'watlock'
 }
