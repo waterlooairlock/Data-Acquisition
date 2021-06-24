@@ -5,6 +5,7 @@
 **/__pycache__/**
 **/.pio/**
 **/*.log
+Refactored_backend/node_modules
 
 !**/launch.json
 
