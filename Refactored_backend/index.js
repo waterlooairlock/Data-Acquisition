@@ -3,13 +3,12 @@ const app = express()
 const PORT = 8080
 const mongoose = require('mongoose')
 const cron = require('node-cron')
-const i2c = require('i2c-bus')
 
 require('dotenv').config()
 
 //Just send me a DM and i can sauce you the mongouri
 mongoose.connect(
-    MONGO_URI, 
+    process.env.MONGO_URI, 
     { useNewUrlParser: true,
     useUnifiedTopology: true
      }).then(()=> {
