@@ -24,9 +24,15 @@ app.use(require("./routes/getSensors"))
 cron.schedule('* * * * *', ()=> {
     //This is where we collect info from the sensors. It will run every minute
 
-
-    //In here, we also need to check the db to see if there is an entry that is older than lets say, 2 days
+    //In here, we also need to check the db to see if there is an entry that is older than lets say, 7 days
     //If that is the csae, then we delete the entry too save space
+    
+    //Draft METHOD #1
+    db.collection.remove({"field_name":{$nin:new Date(Date.now() - 24*60*60*7 * 1000)}})
+    //Draft METHOD #2
+    db.getCollection("COLLECTION_NAME").find({"createdAt":{$gt:new Date(Date.now() - 24*60*60*7 * 1000)}})
+    
+    
 })
 
 
