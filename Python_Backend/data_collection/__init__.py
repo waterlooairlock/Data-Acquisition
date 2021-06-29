@@ -78,4 +78,16 @@ class data_collection(threading.Thread):
             (arduino_name, arduino_id, 'pressure', 1, pressure, ts),
             (arduino_name, arduino_id, 'temperature', 2, temperature, ts)])
 
-    # def other_function(self):
+    def rtd_thermometer(self):
+        # Group variables for Arduino
+        arduino_name = 'rtd_thermometer'
+        arduino_id = 12
+        ts = self.get_timestamp()
+        # Grab thread_lock (concurrency for I2C) and get sensor readings
+        thread_lock.acquire()
+        temperature = arduinos.get_sensor_reading(arduino_id, 1)
+        thread_lock.release()
+        # Send Readings to MySQL Database
+        self.upload_sensor_data([(arduino_name, arduino_id, 'temperature', 2, temperature, ts)])
+
+   # def other_function(self):
