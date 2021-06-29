@@ -28,10 +28,13 @@ args = arg_parser.parse_args()
 use_i2c = not vars(args)["no_i2c"]
 
 # Determine if Real Arduinos or the fake interface should be used.
+'''
 if use_i2c:
     arduinos = arduino_interface.arduino_interface
 else:
     arduinos = arduino_interface.fake_arduino_interface
+'''
+arduinos = arduino_interface.fake_arduino_interface
 
 # Global variables
 thread_lock = threading.Lock()
