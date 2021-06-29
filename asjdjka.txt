@@ -1,0 +1,5 @@
+1. Make sure you are in the main directory
+
+2. git add .
+
+3. 

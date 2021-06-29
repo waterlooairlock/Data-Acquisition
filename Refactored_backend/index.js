@@ -24,10 +24,16 @@ app.use(require("./routes/getSensors"))
 cron.schedule('* * * * *', ()=> {
     //This is where we collect info from the sensors. It will run every minute
 
+    //Adds to the db
+
+
+    //Deletion
+    //DataInstance.remove({"timeStamp":{$nin:new Date(Date.now() - 24*60*60*7 * 1000)}})
 
     //In here, we also need to check the db to see if there is an entry that is older than lets say, 2 days
     //If that is the csae, then we delete the entry too save space
 })
+
 
 
 app.listen(PORT, ()=> {

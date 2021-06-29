@@ -13,7 +13,7 @@
  * command handling.
  */
 
-#include <arduino.h>
+#include <Arduino.h>
 #include "data_acquisition_lib.h"
 
 void setup(){
