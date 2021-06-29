@@ -88,6 +88,7 @@ class data_collection(threading.Thread):
         temperature = arduinos.get_sensor_reading(arduino_id, 1)
         thread_lock.release()
         # Send Readings to MySQL Database
-        self.upload_sensor_data([(arduino_name, arduino_id, 'temperature', 2, temperature, ts)])
+        self.upload_sensor_data(
+            [(arduino_name, arduino_id, 'temperature', 2, temperature, ts)])
 
    # def other_function(self):
