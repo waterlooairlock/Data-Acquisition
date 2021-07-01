@@ -11,3 +11,5 @@ Refactored_backend/node_modules
 
 /Python_Backend/backend_env/*
 !/Python_Backend/backend_env/requirements.txt
+
+secret.py

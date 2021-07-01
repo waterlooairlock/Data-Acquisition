@@ -13,6 +13,7 @@ import argparse
 import threading
 import multitimer
 import pymongo
+from secret import MONGOURI
 
 # Modules and Packages
 
@@ -36,8 +37,7 @@ else:
 
 logger = logging.get_logger("Database connection")
 try:
-    dbclient = pymongo.MongoClient(
-        'mongodb+srv://watlock:general@cluster0.7s0cr.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
+    dbclient = pymongo.MongoClient(MONGOURI)
     mydb = dbclient["watlock"]
     sensor_readings_collection = mydb['sensor_readings']
     logger.info("Database connected successfully")
@@ -47,13 +47,3 @@ except BaseException:
 # Global variables
 thread_lock = threading.Lock()
 threads = []
-
-logger = logging.get_logger("Database connection")
-try:
-    dbclient = pymongo.MongoClient(
-        'mongodb+srv://watlock:general@cluster0.7s0cr.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
-    mydb = dbclient["watlock"]
-    sensor_readings_collection = mydb['sensor_readings']
-    logger.info("Database connected successfully")
-except BaseException:
-    logger.error("Database failed to connect")
