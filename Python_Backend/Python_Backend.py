@@ -7,6 +7,7 @@ from command_handler.depressurization import *
 
 main_logger = logging.get_logger("Thread Handler")
 
+
 if __name__ == "__main__":
     # Create list of threads
     threads = [
