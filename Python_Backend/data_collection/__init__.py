@@ -5,6 +5,7 @@ import mysql.connector
 import pymongo
 from config import sensor_readings_collection
 import multitimer
+from secret import MONGOURI
 
 from config import arduinos
 class data_collection(threading.Thread):
@@ -16,7 +17,7 @@ class data_collection(threading.Thread):
         self.logger.info("Configuring sensor readings table")
         # Connect to database and verify connection
         try:
-            dbclient = pymongo.MongoClient('mongodb+srv://watlock:general@cluster0.7s0cr.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
+            dbclient = pymongo.MongoClient(MONGOURI)
             mydb = dbclient["watlock"]
 
             self.logger.info("Database Connection Succeded")
@@ -36,7 +37,7 @@ class data_collection(threading.Thread):
             "sensor_type": sensor_type,
             "sensor_id": sensor_id,
             "reading": reading,
-            "timestamp": self.get_timestamp(self)
+            "timestamp": self.get_timestamp()
         }
 
         try:
@@ -72,12 +73,11 @@ class data_collection(threading.Thread):
         # Group variables for Arduino
         arduino_name = 'rtd_thermometer'
         arduino_id = 12
-        ts = self.get_timestamp()
         # Grab thread_lock (concurrency for I2C) and get sensor readings
         thread_lock.acquire()
-        temperature = arduinos.get_sensor_reading(arduino_id, 1)
+        temperature = arduinos.get_sensor_reading(self, arduino_ID=arduino_id, sensor_number=1)
         thread_lock.release()
         # Send Readings to Database
-        self.upload_sensor_data(arduino_name, arduino_id, 'temperature', 2, temperature, ts)
+        self.upload_sensor_data(arduino_name, arduino_id, 'temperature', 2, temperature)
 
    # def other_function(self):
