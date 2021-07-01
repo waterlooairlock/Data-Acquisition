@@ -8,6 +8,8 @@ import multitimer
 from secret import MONGOURI
 
 from config import arduinos
+
+
 class data_collection(threading.Thread):
     def __init__(self, name):
         threading.Thread.__init__(self)
@@ -27,7 +29,8 @@ class data_collection(threading.Thread):
 
         sensor_readings_collection = mydb['sensor_readings']
 
-    def upload_sensor_data(self, arduino_name, arduino_id, sensor_type, sensor_id, reading):
+    def upload_sensor_data(self, arduino_name, arduino_id,
+                           sensor_type, sensor_id, reading):
         query = "INSERT INTO sensor_readings (arduino_name,arduino_id,sensor_type,sensor_id,reading,time)" \
                 "VALUES(%s,%s,%s,%s,%s,%s)"
 
@@ -75,9 +78,15 @@ class data_collection(threading.Thread):
         arduino_id = 12
         # Grab thread_lock (concurrency for I2C) and get sensor readings
         thread_lock.acquire()
-        temperature = arduinos.get_sensor_reading(self, arduino_ID=arduino_id, sensor_number=1)
+        temperature = arduinos.get_sensor_reading(
+            self, arduino_ID=arduino_id, sensor_number=1)
         thread_lock.release()
         # Send Readings to Database
-        self.upload_sensor_data(arduino_name, arduino_id, 'temperature', 2, temperature)
+        self.upload_sensor_data(
+            arduino_name,
+            arduino_id,
+            'temperature',
+            2,
+            temperature)
 
    # def other_function(self):

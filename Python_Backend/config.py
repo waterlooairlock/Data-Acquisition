@@ -36,11 +36,12 @@ else:
 
 logger = logging.get_logger("Database connection")
 try:
-    dbclient = pymongo.MongoClient('mongodb+srv://watlock:general@cluster0.7s0cr.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
+    dbclient = pymongo.MongoClient(
+        'mongodb+srv://watlock:general@cluster0.7s0cr.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
     mydb = dbclient["watlock"]
     sensor_readings_collection = mydb['sensor_readings']
     logger.info("Database connected successfully")
-except:
+except BaseException:
     logger.error("Database failed to connect")
 
 # Global variables
@@ -49,9 +50,10 @@ threads = []
 
 logger = logging.get_logger("Database connection")
 try:
-    dbclient = pymongo.MongoClient('mongodb+srv://watlock:general@cluster0.7s0cr.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
+    dbclient = pymongo.MongoClient(
+        'mongodb+srv://watlock:general@cluster0.7s0cr.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
     mydb = dbclient["watlock"]
     sensor_readings_collection = mydb['sensor_readings']
     logger.info("Database connected successfully")
-except:
+except BaseException:
     logger.error("Database failed to connect")
