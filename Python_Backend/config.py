@@ -12,7 +12,7 @@ import datetime
 import argparse
 import threading
 import multitimer
-import mysql.connector
+import pymongo
 
 # Modules and Packages
 
@@ -28,20 +28,32 @@ args = arg_parser.parse_args()
 use_i2c = not vars(args)["no_i2c"]
 
 # Determine if Real Arduinos or the fake interface should be used.
-'''
+
 if use_i2c:
     arduinos = arduino_interface.arduino_interface
 else:
     arduinos = arduino_interface.fake_arduino_interface
-'''
+
 arduinos = arduino_interface.fake_arduino_interface
+
+logger = logging.get_logger("Database connection")
+try:
+    dbclient = pymongo.MongoClient('mongodb+srv://watlock:general@cluster0.7s0cr.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
+    mydb = dbclient["watlock"]
+    sensor_readings_collection = mydb['sensor_readings']
+    logger.info("Database connected successfully")
+except:
+    logger.error("Database failed to connect")
 
 # Global variables
 thread_lock = threading.Lock()
 threads = []
-database_config = {
-    'host': 'localhost',
-    'user': 'watlock_user',
-    'password': 'elon_gated_musk_rat',
-    'database': 'watlock'
-}
+
+logger = logging.get_logger("Database connection")
+try:
+    dbclient = pymongo.MongoClient('mongodb+srv://watlock:general@cluster0.7s0cr.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
+    mydb = dbclient["watlock"]
+    sensor_readings_collection = mydb['sensor_readings']
+    logger.info("Database connected successfully")
+except:
+    logger.error("Database failed to connect")

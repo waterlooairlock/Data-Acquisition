@@ -25,7 +25,7 @@ void setup(){
 void loop(){
     pressure_hold = sensor.getPressure(ADC_4096);
     Serial.print("Pressure reading: "); Serial.println(pressure_hold);
-    temperature_hold = sensor.sensor.getTemperature(CELSIUS, ADC_512);
+    temperature_hold = sensor.getTemperature(CELSIUS, ADC_512);
     Serial.print("Temperature reading: "); Serial.println(temperature_hold);
 
     delay(1000); // Pause for 1 Second

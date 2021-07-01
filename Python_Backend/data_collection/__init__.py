@@ -3,6 +3,8 @@ from config import *
 #from config import database_config
 import mysql.connector
 import pymongo
+from config import sensor_readings_collection
+import multitimer
 
 from config import arduinos
 class data_collection(threading.Thread):
@@ -27,13 +29,18 @@ class data_collection(threading.Thread):
     def upload_sensor_data(self, arduino_name, arduino_id, sensor_type, sensor_id, reading):
         query = "INSERT INTO sensor_readings (arduino_name,arduino_id,sensor_type,sensor_id,reading,time)" \
                 "VALUES(%s,%s,%s,%s,%s,%s)"
-        # Make connection and add sensor readings, otherwise log the error
+
+        new_item = {
+            "arduino_name": arduino_name,
+            "arduino_id": arduino_id,
+            "sensor_type": sensor_type,
+            "sensor_id": sensor_id,
+            "reading": reading,
+            "timestamp": self.get_timestamp(self)
+        }
+
         try:
-            db = mysql.connector.connect(**database_config)
-            db.autocommit = True
-            cursor = db.cursor()
-            cursor.executemany(query, readings)
-            cursor.close()
+            sensor_readings_collection.insert_one(new_item)
             self.logger.debug("Successful write to database")
         except Exception:
             self.logger.exception("Writing to database FAILED")
@@ -49,7 +56,7 @@ class data_collection(threading.Thread):
     def run(self):
         # Create timers for each Arduino
         timers = [
-            multitimer.MultiTimer(interval=1, function=self.depressurization),
+            multitimer.MultiTimer(interval=60, function=self.rtd_thermometer),
             #other_timer = multitimer.MultiTimer(interval=seconds, function=other_function),
         ]
         # Start all timers and enter while-true
@@ -61,20 +68,16 @@ class data_collection(threading.Thread):
 
     """ ──────── TIMER FUNCTIONS ──────── """
 
-    def depressurization(self):
+    def rtd_thermometer(self):
         # Group variables for Arduino
-        arduino_name = 'depressurization'
-        arduino_id = 11
+        arduino_name = 'rtd_thermometer'
+        arduino_id = 12
         ts = self.get_timestamp()
         # Grab thread_lock (concurrency for I2C) and get sensor readings
         thread_lock.acquire()
-        #pressure = arduinos.get_sensor_reading(arduino_id, 1)
-        #temperature = arduinos.get_sensor_reading(arduino_id, 2)
+        temperature = arduinos.get_sensor_reading(arduino_id, 1)
         thread_lock.release()
-        # Send Readings to MySQL Database
-        self.upload_sensor_data([
-            (arduino_name, arduino_id, 'pressure', 1, 21, ts),
-            (arduino_name, arduino_id, 'temperature', 2, 23, ts)])
+        # Send Readings to Database
+        self.upload_sensor_data(arduino_name, arduino_id, 'temperature', 2, temperature, ts)
 
-    # def other_function(self):
-
+   # def other_function(self):
