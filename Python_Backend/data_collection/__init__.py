@@ -31,8 +31,6 @@ class data_collection(threading.Thread):
 
     def upload_sensor_data(self, arduino_name, arduino_id,
                            sensor_type, sensor_id, reading):
-        query = "INSERT INTO sensor_readings (arduino_name,arduino_id,sensor_type,sensor_id,reading,time)" \
-                "VALUES(%s,%s,%s,%s,%s,%s)"
 
         new_item = {
             "arduino_name": arduino_name,
@@ -54,6 +52,12 @@ class data_collection(threading.Thread):
         ts = time.time()
         return datetime.datetime.fromtimestamp(
             ts).strftime('%Y-%m-%d %H:%M:%S')
+    
+    def send_sensor_value(self, arduino_name):
+        query = {"arduino_name" : arduino_name}
+        mydoc = sensor_readings_collection.find(query)
+        return jsonify(mydoc)
+
 
     """ ──────── Primary Run Function for Thread ──────── """
 
