@@ -76,6 +76,22 @@ class data_collection(threading.Thread):
 
     """ ──────── TIMER FUNCTIONS ──────── """
 
+    def depressurization(self):
+        # Group variables for Arduino
+        arduino_name = 'depressurization'
+        arduino_id = 11
+        ts = self.get_timestamp()
+        # Grab thread_lock (concurrency for I2C) and get sensor readings
+        thread_lock.acquire()
+        pressure = arduinos.get_sensor_reading(
+            self, arduino_ID=arduino_id, sensor_number=1)
+        temperature = arduinos.get_sensor_reading(
+            self, arduino_ID=arduino_id, sensor_number=2)
+        thread_lock.release()
+        # Send Readings to Database
+        self.upload_sensor_data(arduino_name, arduino_id, 'pressure', 1, ts)
+        self.upload_sensor_data(arduino_name, arduino_id, 'temperature', 2, ts)
+
     def rtd_thermometer(self):
         # Group variables for Arduino
         arduino_name = 'rtd_thermometer'
@@ -83,7 +99,7 @@ class data_collection(threading.Thread):
         # Grab thread_lock (concurrency for I2C) and get sensor readings
         thread_lock.acquire()
         temperature = arduinos.get_sensor_reading(
-            self, arduino_ID=arduino_id, sensor_number=1)
+            self, arduino_ID=arduino_id, sensor_number=2)
         thread_lock.release()
         # Send Readings to Database
         self.upload_sensor_data(

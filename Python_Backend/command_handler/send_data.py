@@ -22,4 +22,3 @@ def get_data():
       'reading': sensor_reading,
       'sensor': sensor
     }
-
