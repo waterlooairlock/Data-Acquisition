@@ -11,7 +11,7 @@ import logging
 
 # for the various levels of warning in the log file.
 
-log_path = "logs/"
+log_path = "Python_Backend/logs/"
 
 
 def get_logger(name):

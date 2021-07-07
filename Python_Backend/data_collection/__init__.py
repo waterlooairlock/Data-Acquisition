@@ -1,9 +1,7 @@
 
 from config import *
 #from config import database_config
-import mysql.connector
 import pymongo
-from config import sensor_readings_collection
 import multitimer
 from secret import MONGOURI
 
@@ -31,9 +29,6 @@ class data_collection(threading.Thread):
 
     def upload_sensor_data(self, arduino_name, arduino_id,
                            sensor_type, sensor_id, reading):
-        query = "INSERT INTO sensor_readings (arduino_name,arduino_id,sensor_type,sensor_id,reading,time)" \
-                "VALUES(%s,%s,%s,%s,%s,%s)"
-
         new_item = {
             "arduino_name": arduino_name,
             "arduino_id": arduino_id,
@@ -61,6 +56,8 @@ class data_collection(threading.Thread):
         # Create timers for each Arduino
         timers = [
             multitimer.MultiTimer(interval=60, function=self.rtd_thermometer),
+            multitimer.MultiTimer(interval=60, function=self.air_quality_readings),
+            multitimer.MultiTimer(interval=60, function=self.pressure_readings),
             #other_timer = multitimer.MultiTimer(interval=seconds, function=other_function),
         ]
         # Start all timers and enter while-true
@@ -88,5 +85,42 @@ class data_collection(threading.Thread):
             'temperature',
             2,
             temperature)
+
+
+    def air_quality_readings(self):
+        # Group variables for Arduino
+        arduino_name = 'air_quality_readings'
+        arduino_id = 12
+        # Grab thread_lock (concurrency for I2C) and get sensor readings
+        thread_lock.acquire()
+        air_quality = arduinos.get_sensor_reading(
+            self, arduino_ID=arduino_id, sensor_number=2) # sensor number 2
+        thread_lock.release()
+        # Send Readings to Database
+        self.upload_sensor_data(
+            arduino_name,
+            arduino_id,
+            'air_quality',
+            2,
+            air_quality)
+
+
+    def pressure_readings(self):
+        # Group variables for Arduino
+        arduino_name = 'pressure_readings'
+        arduino_id = 12
+        # Grab thread_lock (concurrency for I2C) and get sensor readings
+        thread_lock.acquire()
+        pressure = arduinos.get_sensor_reading(
+            self, arduino_ID=arduino_id, sensor_number=3) # sensor number 3
+        thread_lock.release()
+        # Send Readings to Database
+        self.upload_sensor_data(
+            arduino_name,
+            arduino_id,
+            'pressure',
+            3,
+            pressure)
+
 
    # def other_function(self):
