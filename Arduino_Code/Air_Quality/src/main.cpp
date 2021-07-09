@@ -10,31 +10,31 @@
 
 #include <Arduino.h>
 #include "data_acquisition_lib.h"
-#include <SoftwareSerial.h>
+#include <wiring_private.h>
 
-#define CO2_RX_PIN 5
-#define CO2_TX_PIN 6
-#define  O2_RX_PIN 7
-#define  O2_TX_PIN 8
+#define CO2_RX_PIN 1
+#define CO2_TX_PIN 0
+#define  O2_RX_PIN 3
+#define  O2_TX_PIN 2
 
-SoftwareSerial co2_mx_board( CO2_RX_PIN, CO2_TX_PIN );
-SoftwareSerial  o2_mx_board(  O2_RX_PIN,  O2_TX_PIN );
+Uart co2_mx_board(&sercom3, CO2_RX_PIN, CO2_TX_PIN, SERCOM_RX_PAD_1, UART_TX_PAD_0);
+Uart  o2_mx_board(&sercom0,  O2_RX_PIN,  O2_TX_PIN, SERCOM_RX_PAD_3, UART_TX_PAD_2);
 
 uint16_t co2_comp = 0, o2_comp = 0;
 
-void get_mx_board_val( SoftwareSerial*, uint16_t& );
+void get_mx_board_val( Uart*, uint16_t& );
 
 void setup(){
     Serial.begin(9600);
     Watlock_Interface::setup_interface(Serial, 13);
 
-    pinMode(CO2_RX_PIN,  INPUT);
-    pinMode(CO2_TX_PIN, OUTPUT);
-    pinMode( O2_RX_PIN,  INPUT);
-    pinMode( O2_TX_PIN, OUTPUT);
-
     co2_mx_board.begin(9600);
     o2_mx_board.begin(9600);
+
+    pinPeripheral(CO2_RX_PIN, PIO_SERCOM);
+    pinPeripheral(CO2_TX_PIN, PIO_SERCOM);
+    pinPeripheral( O2_RX_PIN, PIO_SERCOM);
+    pinPeripheral( O2_TX_PIN, PIO_SERCOM);
 
     // set polling mode
     co2_mx_board.println("K 2");
@@ -51,10 +51,10 @@ void loop() {
     delay(1000); // pause 1 sec
 }
 
-void get_mx_board_val( SoftwareSerial* mx_board, uint16_t& val_hold ) {
+void get_mx_board_val( Uart* mx_board, uint16_t& val_hold ) {
     while ( mx_board->read() != -1 )
         /* Serial.println("I hope this doesn't lock the board") */; // clear input buffer
-    mx_board->listen();
+    // mx_board->listen();
     mx_board->println("Z");
     char response_code = mx_board->peek();
     switch (response_code) {
@@ -93,4 +93,12 @@ float get_sensor_1(){
  */
 float get_sensor_2(){
     return (float) o2_comp;
+}
+
+void SERCOM0_Handler() {
+    o2_mx_board.IrqHandler();
+}
+
+void SERCOM3_Handler() {
+    co2_mx_board.IrqHandler();
 }
