@@ -4,7 +4,8 @@ from config import *
 from data_collection import *
 from command_handler import *
 from command_handler.depressurization import *
-from command_handler.get_readings import *
+from command_handler.get_reading import *
+from command_handler.get_multiple_readings import *
 
 main_logger = logging.get_logger("Thread Handler")
 
