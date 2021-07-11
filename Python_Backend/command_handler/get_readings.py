@@ -43,6 +43,7 @@ def get_multiple_readings():
         response["readings"] = []
         return response
 
+
 @command_handler.route("/arduinos/get_reading")
 def get_reading():
     if 'sensor_type' not in request.args:
@@ -68,13 +69,13 @@ def get_reading():
     sensor_readings_collection = mydb['sensor_readings']
     try:
         reading = sensor_readings_collection.find(
-                {
-                    "sensor_type": sensor_type,
-                    "sensor_id": sensor_id}).sort(
-                "timestamp",
-                pymongo.DESCENDING).limit(1)
+            {
+                "sensor_type": sensor_type,
+                "sensor_id": sensor_id}).sort(
+            "timestamp",
+            pymongo.DESCENDING).limit(1)
         reading["_id"] = str(reading["_id"])
 
-        return {"reading" : reading}
+        return {"reading": reading}
     except BaseException:
         return {"reading": ""}
