@@ -16,31 +16,53 @@
 #include <Arduino.h>
 #include "data_acquisition_lib.h"
 
-void setup(){
+#define VALVE1_PIN 1
+#define VALVE2_PIN 2
+#define VALVE3_PIN 3
+#define VALVE4_PIN 4
+#define VALVE5_PIN 5
+
+#define VALVE_CLOSE LOW
+#define VALVE_OPEN HIGH
+
+#define NUM_VALVES 5
+
+const pin_size_t VALVE_PIN[NUM_VALVES] {
+    VALVE1_PIN,
+    VALVE2_PIN,
+    VALVE3_PIN,
+    VALVE4_PIN,
+    VALVE5_PIN
+};
+
+void setup() {
     Serial.begin(9600);
-    Watlock_Interface::setup_interface(Serial, 69);
+    Watlock_Interface::setup_interface(Serial, 14);
+
+    for (uint8_t i = 0;  i < NUM_VALVES; ++i)
+        pinMode(VALVE_PIN[i], OUTPUT);
 }
 
-void loop(){
-    Serial.println("");
-}
-
-// Overwrite the Sensor 1 function
-float get_sensor_1(){
-    float test_val = 1.2345;
-    return test_val;
-}
+void loop() {}
 
 // Overwrite the command handing function
 void handle_command(uint8_t code, uint8_t length, uint8_t data[]){
-    switch(code){
-        case 1:
-            // Do something when the code is 1
+    if (!data) {
+        Serial.println("[ERROR] No valve pin received");
+        return;
+    }
+
+    switch(code) {
+        case 0: // close
+            digitalWrite(VALVE_PIN[data[0] - 1], VALVE_CLOSE);
+            Serial.print("Closing valve "); Serial.println(data[0]);
             break;
-        case 2:
-            // Do something when the code is 2
+        case 1: // open
+            digitalWrite(VALVE_PIN[data[0] - 1], VALVE_OPEN);
+            Serial.print("Opening valve "); Serial.println(data[0]);
             break;
-        break;
-            return; // Handle outlying cases by doing nothing
+        default:
+            Serial.println("[ERROR] Received unrecognized command");
+            break;
     }
 }
