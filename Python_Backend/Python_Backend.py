@@ -6,6 +6,7 @@ from command_handler import *
 from command_handler.depressurization import *
 from command_handler.get_reading import *
 from command_handler.get_multiple_readings import *
+from command_handler.enterexit import *
 
 main_logger = logging.get_logger("Thread Handler")
 
