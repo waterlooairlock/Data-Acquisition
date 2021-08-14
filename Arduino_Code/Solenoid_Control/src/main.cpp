@@ -16,18 +16,17 @@
 #include <Arduino.h>
 #include "data_acquisition_lib.h"
 
+#define PUMP_PIN   0
 #define VALVE1_PIN 1
 #define VALVE2_PIN 2
 #define VALVE3_PIN 3
 #define VALVE4_PIN 4
 #define VALVE5_PIN 5
 
-#define VALVE_CLOSE LOW
-#define VALVE_OPEN HIGH
+#define NUM_CONTROLS 6
 
-#define NUM_VALVES 5
-
-const pin_size_t VALVE_PIN[NUM_VALVES] {
+const pin_size_t CONTROL_PINS[NUM_CONTROLS] {
+    PUMP_PIN,
     VALVE1_PIN,
     VALVE2_PIN,
     VALVE3_PIN,
@@ -39,26 +38,27 @@ void setup() {
     Serial.begin(9600);
     Watlock_Interface::setup_interface(Serial, 14);
 
-    for (uint8_t i = 0;  i < NUM_VALVES; ++i)
-        pinMode(VALVE_PIN[i], OUTPUT);
+    for (uint8_t i = 0;  i < NUM_CONTROLS; ++i)
+        pinMode(CONTROL_PINS[i], OUTPUT);
 }
 
 void loop() {}
 
 // Overwrite the command handing function
+// ! Confirm high/low states
 void handle_command(uint8_t code, uint8_t length, uint8_t data[]){
     if (!data) {
-        Serial.println("[ERROR] No valve pin received");
+        Serial.println("[ERROR] No control pin received");
         return;
     }
 
     switch(code) {
-        case 0: // close
-            digitalWrite(VALVE_PIN[data[0] - 1], VALVE_CLOSE);
+        case 0: // "close" for valves, "off" for pump
+            digitalWrite(CONTROL_PINS[data[0]], LOW);
             Serial.print("Closing valve "); Serial.println(data[0]);
             break;
-        case 1: // open
-            digitalWrite(VALVE_PIN[data[0] - 1], VALVE_OPEN);
+        case 1: // "open" for valves, "on" for pump
+            digitalWrite(CONTROL_PINS[data[0]], HIGH);
             Serial.print("Opening valve "); Serial.println(data[0]);
             break;
         default:
