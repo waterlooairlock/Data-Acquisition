@@ -31,7 +31,8 @@ def enterexit():
 
     if entering:
       if not isMarsAtmosphere:
-        arduinos.send_command(11, 1, bytearray([0x02]))
+
+        arduinos.send_command(14, 1, bytearray([0x00]))
         time.sleep(2)
         arduinos.send_command(14, 1, bytearray([0x01]))
         arduinos.send_command(14, 1, bytearray([0x02]))
@@ -41,7 +42,7 @@ def enterexit():
         # We will add this function once we know a valid threshold value
 
         time.sleep(2)
-        arduinos.send_command(11, 1, bytearray([0x01]))
+        arduinos.send_command(14, 0, bytearray([0x00]))
         time.sleep(2)
 
         arduinos.send_command(14, 0, bytearray([0x01]))
@@ -57,7 +58,7 @@ def enterexit():
 
       time.sleep(10)
 
-      arduinos.send_command(11, 1, bytearray([0x02]))
+      arduinos.send_command(14, 1, bytearray([0x00]))
       time.sleep(2)
 
       arduinos.send_command(14, 1, bytearray([0x01]))
@@ -67,7 +68,7 @@ def enterexit():
       # We need to wait until crew lock pressure matches max vacuum pressure
       # We will add this function once we know a valid threshold value
 
-      arduinos.send_command(11, 1, bytearray([0x01]))
+      arduinos.send_command(14, 0, bytearray([0x00]))
       time.sleep(2)
 
       arduinos.send_command(14, 0, bytearray([0x01]))
@@ -82,7 +83,7 @@ def enterexit():
 
     else:
       if isMarsAtmosphere:
-        arduinos.send_command(11, 1, bytearray([0x02]))
+        arduinos.send_command(14, 1, bytearray([0x00]))
         time.sleep(2)
 
         arduinos.send_command(14, 1, bytearray([0x01]))
@@ -90,7 +91,7 @@ def enterexit():
         # We need to wait until crew lock pressure matches max vacuum pressure
         # We will add this function once we know a valid threshold value
 
-        arduinos.send_command(11, 1, bytearray([0x01]))
+        arduinos.send_command(14, 0, bytearray([0x00]))
         time.sleep(2)
 
         arduinos.send_command(14, 0, bytearray([0x01]))
@@ -106,7 +107,7 @@ def enterexit():
 
       time.sleep(15)
 
-      arduinos.send_command(11, 1, bytearray([0x02]))
+      arduinos.send_command(14, 0, bytearray([0x00]))
       time.sleep(2)
 
       arduinos.send_command(14, 1, bytearray([0x01]))
