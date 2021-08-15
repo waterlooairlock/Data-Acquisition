@@ -9,6 +9,7 @@ from config import arduinos
 
 isMarsAtmosphere = False
 
+
 class data_collection(threading.Thread):
     def __init__(self, name):
         threading.Thread.__init__(self)

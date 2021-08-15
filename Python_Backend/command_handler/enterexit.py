@@ -30,10 +30,37 @@ def enterexit():
     # close is 0
 
     if entering:
-      if not isMarsAtmosphere:
+        if not isMarsAtmosphere:
+
+            arduinos.send_command(14, 1, bytearray([0x00]))
+            time.sleep(2)
+            arduinos.send_command(14, 1, bytearray([0x01]))
+            arduinos.send_command(14, 1, bytearray([0x02]))
+            time.sleep(2)
+
+            # We need to wait until crew lock pressure matches max vacuum pressure
+            # We will add this function once we know a valid threshold value
+
+            time.sleep(2)
+            arduinos.send_command(14, 0, bytearray([0x00]))
+            time.sleep(2)
+
+            arduinos.send_command(14, 0, bytearray([0x01]))
+            arduinos.send_command(14, 0, bytearray([0x02]))
+            time.sleep(2)
+
+            arduinos.send_command(14, 1, bytearray([0x04]))
+
+            while not isMarsAtmosphere:
+                continue
+
+            arduinos.send_command(14, 0, bytearray([0x04]))
+
+        time.sleep(10)
 
         arduinos.send_command(14, 1, bytearray([0x00]))
         time.sleep(2)
+
         arduinos.send_command(14, 1, bytearray([0x01]))
         arduinos.send_command(14, 1, bytearray([0x02]))
         time.sleep(2)
@@ -41,90 +68,62 @@ def enterexit():
         # We need to wait until crew lock pressure matches max vacuum pressure
         # We will add this function once we know a valid threshold value
 
-        time.sleep(2)
         arduinos.send_command(14, 0, bytearray([0x00]))
         time.sleep(2)
 
         arduinos.send_command(14, 0, bytearray([0x01]))
-        arduinos.send_command(14, 0, bytearray([0x02]))     
+        arduinos.send_command(14, 0, bytearray([0x02]))
+        time.sleep(2)
+
+        arduinos.send_command(14, 1, bytearray([0x05]))
+
+        time.sleep(15)
+
+        arduinos.send_command(14, 0, bytearray([0x05]))
+
+    else:
+        if isMarsAtmosphere:
+            arduinos.send_command(14, 1, bytearray([0x00]))
+            time.sleep(2)
+
+            arduinos.send_command(14, 1, bytearray([0x01]))
+            arduinos.send_command(14, 1, bytearray([0x02]))
+            # We need to wait until crew lock pressure matches max vacuum pressure
+            # We will add this function once we know a valid threshold value
+
+            arduinos.send_command(14, 0, bytearray([0x00]))
+            time.sleep(2)
+
+            arduinos.send_command(14, 0, bytearray([0x01]))
+            arduinos.send_command(14, 0, bytearray([0x02]))
+            time.sleep(2)
+
+            arduinos.send_command(14, 1, bytearray([0x05]))
+
+            while isMarsAtmosphere:
+                continue
+
+            arduinos.send_command(14, 0, bytearray([0x05]))
+
+        time.sleep(15)
+
+        arduinos.send_command(14, 0, bytearray([0x00]))
+        time.sleep(2)
+
+        arduinos.send_command(14, 1, bytearray([0x01]))
+        arduinos.send_command(14, 1, bytearray([0x02]))
+        # We need to wait until crew lock pressure matches max vacuum pressure
+        # We will add this function once we know a valid threshold value
+
+        arduinos.send_command(14, 0, bytearray([0x01]))
+        arduinos.send_command(14, 0, bytearray([0x02]))
         time.sleep(2)
 
         arduinos.send_command(14, 1, bytearray([0x04]))
 
         while not isMarsAtmosphere:
-          continue
+            continue
 
         arduinos.send_command(14, 0, bytearray([0x04]))
-
-      time.sleep(10)
-
-      arduinos.send_command(14, 1, bytearray([0x00]))
-      time.sleep(2)
-
-      arduinos.send_command(14, 1, bytearray([0x01]))
-      arduinos.send_command(14, 1, bytearray([0x02]))
-      time.sleep(2)
-
-      # We need to wait until crew lock pressure matches max vacuum pressure
-      # We will add this function once we know a valid threshold value
-
-      arduinos.send_command(14, 0, bytearray([0x00]))
-      time.sleep(2)
-
-      arduinos.send_command(14, 0, bytearray([0x01]))
-      arduinos.send_command(14, 0, bytearray([0x02]))     
-      time.sleep(2)
-
-      arduinos.send_command(14, 1, bytearray([0x05]))
-
-      time.sleep(15)
-
-      arduinos.send_command(14, 0, bytearray([0x05]))
-
-    else:
-      if isMarsAtmosphere:
-        arduinos.send_command(14, 1, bytearray([0x00]))
-        time.sleep(2)
-
-        arduinos.send_command(14, 1, bytearray([0x01]))
-        arduinos.send_command(14, 1, bytearray([0x02]))
-        # We need to wait until crew lock pressure matches max vacuum pressure
-        # We will add this function once we know a valid threshold value
-
-        arduinos.send_command(14, 0, bytearray([0x00]))
-        time.sleep(2)
-
-        arduinos.send_command(14, 0, bytearray([0x01]))
-        arduinos.send_command(14, 0, bytearray([0x02]))     
-        time.sleep(2)
-
-        arduinos.send_command(14, 1, bytearray([0x05]))
-
-        while isMarsAtmosphere:
-          continue
-
-        arduinos.send_command(14, 0, bytearray([0x05]))
-
-      time.sleep(15)
-
-      arduinos.send_command(14, 0, bytearray([0x00]))
-      time.sleep(2)
-
-      arduinos.send_command(14, 1, bytearray([0x01]))
-      arduinos.send_command(14, 1, bytearray([0x02]))
-      # We need to wait until crew lock pressure matches max vacuum pressure
-      # We will add this function once we know a valid threshold value
-
-      arduinos.send_command(14, 0, bytearray([0x01]))
-      arduinos.send_command(14, 0, bytearray([0x02]))
-      time.sleep(2)
-
-
-      arduinos.send_command(14, 1, bytearray([0x04]))
-
-      while not isMarsAtmosphere:
-        continue
-
-      arduinos.send_command(14, 0, bytearray([0x04]))
 
     return 'okay'
