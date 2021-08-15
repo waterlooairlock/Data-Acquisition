@@ -7,6 +7,7 @@ from secret import MONGOURI
 
 from config import arduinos
 
+isMarsAtmosphere = False
 
 class data_collection(threading.Thread):
     def __init__(self, name):
@@ -37,6 +38,11 @@ class data_collection(threading.Thread):
             "reading": reading,
             "timestamp": self.get_timestamp()
         }
+
+        if sensor_type == "pressure" and reading > 10000:
+            isMarsAtmosphere = False
+        else:
+            isMarsAtmosphere = True
 
         try:
             sensor_readings_collection.insert_one(new_item)
